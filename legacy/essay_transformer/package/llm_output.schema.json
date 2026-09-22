@@ -1,0 +1,226 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://essay-transformer.local/contracts/llm-output.schema.json",
+  "title": "DeepSeek JSON mode outputs for paper readability conversion",
+  "description": "三类 LLM 调用的输出根文档，用 schema_kind 区分：planner / glossary_draft / section_rewrite / worked_example。所有调用必须开启 JSON 输出模式；任何根文档必须可被本 schema 校验通过，否则按服务错误重试。",
+  "type": "object",
+  "oneOf": [
+    { "$ref": "#/$defs/PlannerOutput" },
+    { "$ref": "#/$defs/GlossaryDraftOutput" },
+    { "$ref": "#/$defs/SectionRewriteOutput" },
+    { "$ref": "#/$defs/WorkedExampleOutput" }
+  ],
+  "$defs": {
+    "PlannerOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_kind", "target_order", "block_actions", "key_formulas"],
+      "properties": {
+        "schema_kind": { "const": "planner" },
+        "target_order": {
+          "type": "array",
+          "minItems": 7,
+          "maxItems": 7,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["target_slug", "source_section_ids", "treatment"],
+            "properties": {
+              "target_slug": {
+                "enum": ["tldr", "intro", "conclusion", "related", "method", "experiments", "wrapup"]
+              },
+              "source_section_ids": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+              "treatment": {
+                "enum": ["brief", "expand", "front_load_extract", "compress", "tutorial", "conclusion_only", "summary"]
+              }
+            }
+          }
+        },
+        "block_actions": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "required": ["action"],
+            "properties": {
+              "action": { "enum": ["narrate", "condense", "fold", "drop", "keep_figure", "keep_table_explained"] },
+              "fold_group": { "enum": ["derivation", "repro_data", "references"] },
+              "one_liner": { "type": "string" },
+              "rewrite_caption": { "type": "boolean" },
+              "rationale": { "type": "string" }
+            }
+          }
+        },
+        "key_formulas": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["block_id", "latex", "worked_example_required"],
+            "properties": {
+              "block_id": { "type": "string" },
+              "latex": { "type": "string", "minLength": 1 },
+              "label": { "type": "string" },
+              "worked_example_required": { "type": "boolean" },
+              "example_spec": {
+                "type": "object",
+                "properties": {
+                  "tokens": { "type": "integer", "minimum": 3, "maximum": 5 },
+                  "steps": { "type": "array", "items": { "type": "string" } }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "GlossaryDraftOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_kind", "terms"],
+      "properties": {
+        "schema_kind": { "const": "glossary_draft" },
+        "terms": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["en", "zh", "mode", "reason"],
+            "properties": {
+              "en": { "type": "string", "minLength": 1 },
+              "zh": { "type": "string", "minLength": 1 },
+              "mode": { "enum": ["bilingual", "zh_only"] },
+              "aliases": { "type": "array", "items": { "type": "string" } },
+              "reason": { "type": "string", "description": "为什么属于应保留英文/中英对照的核心术语" },
+              "first_seen_page": { "type": "integer", "minimum": 0 }
+            }
+          }
+        }
+      }
+    },
+    "SectionRewriteOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_kind", "target_slug", "blocks", "out_of_glossary"],
+      "properties": {
+        "schema_kind": { "const": "section_rewrite" },
+        "target_slug": {
+          "enum": ["tldr", "intro", "conclusion", "related", "method", "experiments", "wrapup"]
+        },
+        "blocks": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["kind", "source_block_ids"],
+            "properties": {
+              "kind": { "enum": ["paragraph", "formula_card", "figure", "table_explained", "fold_ref", "tldr", "supplement"] },
+              "markdown": { "type": "string" },
+              "latex": { "type": "string" },
+              "symbol_breakdown": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["symbol", "meaning"],
+                  "properties": {
+                    "symbol": { "type": "string" },
+                    "meaning": { "type": "string" }
+                  }
+                }
+              },
+              "intuition": { "type": "string" },
+              "worked_example_ref": { "type": "string" },
+              "img_path": { "type": "string" },
+              "rewritten_caption": { "type": "string" },
+              "markdown_table": { "type": "string" },
+              "explanation": { "type": "string" },
+              "fold_group": { "enum": ["derivation", "repro_data", "references"] },
+              "title": { "type": "string" },
+              "content_markdown": { "type": "string", "description": "fold_ref 折叠区内的完整原文转写/原始内容" },
+              "supplement_kind": { "enum": ["background", "analogy"], "description": "仅 kind=supplement：补充背景知识或生活化类比（宪法原则 III）" },
+              "source_block_ids": { "type": "array", "items": { "type": "string" } },
+              "source_pages": { "type": "array", "items": { "type": "integer", "minimum": 0 } }
+            },
+            "allOf": [
+              {
+                "if": { "properties": { "kind": { "const": "supplement" } }, "required": ["kind"] },
+                "then": {
+                  "required": ["markdown", "supplement_kind"],
+                  "properties": { "source_block_ids": { "maxItems": 0 } }
+                }
+              },
+              {
+                "if": { "properties": { "kind": { "not": { "const": "supplement" } } }, "required": ["kind"] },
+                "then": {
+                  "properties": { "source_block_ids": { "minItems": 1 } }
+                }
+              }
+            ]
+          }
+        },
+        "out_of_glossary": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["term", "context", "page_idx"],
+            "properties": {
+              "term": { "type": "string" },
+              "context": { "type": "string" },
+              "page_idx": { "type": "integer", "minimum": 0 },
+              "temporary_handling": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "WorkedExampleOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_kind", "formula_block_id", "is_toy_data", "disclaimer", "setup", "steps"],
+      "properties": {
+        "schema_kind": { "const": "worked_example" },
+        "formula_block_id": { "type": "string" },
+        "is_toy_data": { "const": true },
+        "disclaimer": { "const": "教学示意/非论文真实数据" },
+        "setup": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["tokens", "d_k", "Q", "K", "V"],
+          "properties": {
+            "tokens": { "type": "array", "items": { "type": "string" }, "minItems": 3, "maxItems": 5 },
+            "d_k": { "type": "integer", "minimum": 1 },
+            "Q": { "$ref": "#/$defs/Matrix" },
+            "K": { "$ref": "#/$defs/Matrix" },
+            "V": { "$ref": "#/$defs/Matrix" }
+          }
+        },
+        "steps": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "expr", "explain_zh"],
+            "properties": {
+              "name": { "type": "string" },
+              "expr": { "type": "string" },
+              "explain_zh": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "Matrix": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "array",
+        "minItems": 1,
+        "items": { "type": "number" }
+      }
+    }
+  }
+}

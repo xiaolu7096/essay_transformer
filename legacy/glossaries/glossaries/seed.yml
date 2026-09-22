@@ -1,0 +1,51 @@
+# 跨论文种子术语表（contracts/glossary-format.md：meta.paper_id 固定 "*"）
+# 开发者长期维护；运行时实际词表 = seed + 单篇 glossary.yml，同 en 冲突单篇覆盖。
+# 首批 8 条为强制要求（FR-005/SC-001；四词加粗制：
+# self-attention / positional encoding / embedding / softmax）。
+meta:
+  paper_id: "*"
+  status: confirmed
+  confirmed_at: ""
+  schema_version: 1
+terms:
+  - en: "self-attention"
+    zh: "自注意力机制"
+    mode: bilingual
+    scope: seed
+    source: seed
+    aliases: ["self attention"]
+  - en: "positional encoding"
+    zh: "位置编码"
+    mode: bilingual
+    scope: seed
+    source: seed
+  - en: "embedding"
+    zh: "词嵌入"
+    mode: bilingual
+    scope: seed
+    source: seed
+  - en: "softmax"
+    zh: "softmax"
+    mode: bilingual
+    scope: seed
+    source: seed
+  - en: "Transformer"
+    zh: "Transformer"
+    mode: bilingual
+    scope: seed
+    source: seed
+  - en: "attention"
+    zh: "注意力机制"
+    mode: bilingual
+    scope: seed
+    source: seed
+  - en: "encoder"
+    zh: "编码器"
+    mode: bilingual
+    scope: seed
+    source: seed
+  - en: "decoder"
+    zh: "解码器"
+    mode: bilingual
+    scope: seed
+    source: seed

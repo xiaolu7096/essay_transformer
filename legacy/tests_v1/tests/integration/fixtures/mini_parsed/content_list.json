@@ -1,0 +1,241 @@
+[
+  {
+    "type": "text",
+    "text": "Attention Is All You Need",
+    "text_level": 1,
+    "bbox": [
+      341,
+      184,
+      653,
+      209
+    ],
+    "page_idx": 0
+  },
+  {
+    "type": "text",
+    "text": "Abstract",
+    "text_level": 2,
+    "bbox": [
+      457,
+      484,
+      539,
+      501
+    ],
+    "page_idx": 0
+  },
+  {
+    "type": "text",
+    "text": "The dominant sequence transduction models are based on complex recurrent or convolutional neural networks that include an encoder and a decoder. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. Experiments on two machine translation tasks show these models to be superior in quality while being more parallelizable and requiring significantly less time to train. Our model achieves 28.4 BLEU on the WMT 2014 English to-German translation task, improving over the existing best results, including ensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task, our model establishes a new single-model state-of-the-art BLEU score of 41.8 after training for 3.5 days on eight GPUs, a small fraction of the training costs of the best models from the literature. We show that the Transformer generalizes well to other tasks by applying it successfully to English constituency parsing both with large and limited training data.",
+    "bbox": [
+      228,
+      518,
+      769,
+      729
+    ],
+    "page_idx": 0
+  },
+  {
+    "type": "text",
+    "text": "1 Introduction",
+    "text_level": 2,
+    "bbox": [
+      173,
+      90,
+      313,
+      106
+    ],
+    "page_idx": 1
+  },
+  {
+    "type": "text",
+    "text": "Recurrent neural networks, long short-term memory [13] and gated recurrent [7] neural networks in particular, have been firmly established as state of the art approaches in sequence modeling and transduction problems such as language modeling and machine translation [35, 2, 5]. Numerous efforts have since continued to push the boundaries of recurrent language models and encoder-decoder architectures [38, 24, 15].",
+    "bbox": [
+      169,
+      122,
+      826,
+      193
+    ],
+    "page_idx": 1
+  },
+  {
+    "type": "text",
+    "text": "3 Model Architecture",
+    "text_level": 2,
+    "bbox": [
+      171,
+      809,
+      370,
+      825
+    ],
+    "page_idx": 1
+  },
+  {
+    "type": "page_number",
+    "text": "2",
+    "bbox": [
+      493,
+      936,
+      504,
+      948
+    ],
+    "page_idx": 1
+  },
+  {
+    "type": "image",
+    "img_path": "images/f05ba6a0a2e484dbd8bf2a4a4fa2597a69a3a076f5b03cf4e818b176b4049244.jpg",
+    "image_caption": [
+      "Figure 1: The Transformer - model architecture."
+    ],
+    "image_footnote": [],
+    "content": "",
+    "bbox": [
+      320,
+      89,
+      676,
+      497
+    ],
+    "page_idx": 2
+  },
+  {
+    "type": "text",
+    "text": "3.2 Attention",
+    "text_level": 2,
+    "bbox": [
+      171,
+      858,
+      281,
+      872
+    ],
+    "page_idx": 2
+  },
+  {
+    "type": "equation",
+    "text": "$$\n\\operatorname{Attention} (Q, K, V) = \\operatorname{softmax} (\\frac {Q K ^ {T}}{\\sqrt {d _ {k}}}) V\\tag{1}\n$$",
+    "text_format": "latex",
+    "bbox": [
+      354,
+      584,
+      643,
+      619
+    ],
+    "page_idx": 3
+  },
+  {
+    "type": "equation",
+    "text": "$$\n\\begin{array}{c} \\text {MultiHead} (Q, K, V) = \\text {Concat} (\\text {head} _ {1},..., \\text {head} _ {\\mathrm{h}}) W ^ {O} \\\\ \\text {where} \\text {head} _ {\\mathrm{i}} = \\text {Attention} (Q W _ {i} ^ {Q}, K W _ {i} ^ {K}, V W _ {i} ^ {V}) \\end{array}\n$$",
+    "text_format": "latex",
+    "bbox": [
+      300,
+      181,
+      696,
+      220
+    ],
+    "page_idx": 4
+  },
+  {
+    "type": "table",
+    "img_path": "images/db66874159dd74fedb6105cb65e9289bf5be1d2b56af6f09285fae25c7192e6c.jpg",
+    "table_caption": [
+      "Table 1: Maximum path lengths, per-layer complexity and minimum number of sequential operations for different layer types. n is the sequence length, d is the representation dimension, k is the kernel size of convolutions and r the size of the neighborhood in restricted self-attention."
+    ],
+    "table_footnote": [],
+    "table_body": "<table><tr><td>Layer Type</td><td>Complexity per Layer</td><td>Sequential Operations</td><td>Maximum Path Length</td></tr><tr><td>Self-Attention</td><td> $O(n^{2} \\cdot d)$ </td><td>O(1)</td><td>O(1)</td></tr><tr><td>Recurrent</td><td> $O(n \\cdot d^{2})$ </td><td>O(n)</td><td>O(n)</td></tr><tr><td>Convolutional</td><td> $O(k \\cdot n \\cdot d^{2})$ </td><td>O(1)</td><td> $O(\\log_{k}(n))$ </td></tr><tr><td>Self-Attention (restricted)</td><td> $O(r \\cdot n \\cdot d)$ </td><td>O(1)</td><td>O(n/r)</td></tr></table>",
+    "bbox": [
+      192,
+      140,
+      805,
+      234
+    ],
+    "page_idx": 5
+  },
+  {
+    "type": "text",
+    "text": "7 Conclusion",
+    "text_level": 2,
+    "bbox": [
+      171,
+      458,
+      300,
+      474
+    ],
+    "page_idx": 9
+  },
+  {
+    "type": "image",
+    "img_path": "images/__missing_fixture_image__.jpg",
+    "image_caption": [
+      "Figure 99: Synthetic block whose image file is absent."
+    ],
+    "image_footnote": [],
+    "content": "",
+    "bbox": [
+      100,
+      100,
+      200,
+      200
+    ],
+    "page_idx": 5
+  },
+  {
+    "type": "text",
+    "text": "In this work, we presented the Transformer, the first sequence transduction model based entirely on attention, replacing the recurrent layers most commonly used in encoder-decoder architectures with multi-headed self-attention.",
+    "bbox": [
+      169,
+      489,
+      825,
+      531
+    ],
+    "page_idx": 9
+  },
+  {
+    "type": "text",
+    "text": "References",
+    "text_level": 2,
+    "bbox": [
+      173,
+      750,
+      269,
+      767
+    ],
+    "page_idx": 9
+  },
+  {
+    "type": "ref_text",
+    "text": "[1] Jimmy Lei Ba, Jamie Ryan Kiros, and Geoffrey E Hinton. Layer normalization. arXiv preprint arXiv:1607.06450, 2016.",
+    "bbox": [
+      181,
+      773,
+      823,
+      801
+    ],
+    "page_idx": 9
+  },
+  {
+    "type": "ref_text",
+    "text": "[2] Dzmitry Bahdanau, Kyunghyun Cho, and Yoshua Bengio. Neural machine translation by jointly learning to align and translate. CoRR, abs/1409.0473, 2014.",
+    "bbox": [
+      181,
+      810,
+      823,
+      839
+    ],
+    "page_idx": 9
+  },
+  {
+    "type": "chart",
+    "img_path": "images/8b8122ff9e5a304dbbfde70f24d29dc112b471b5f78d64243dcea37188fb0eb7.jpg",
+    "content": "",
+    "chart_caption": [
+      "Attention Visualizations",
+      "Figure 3: An example of the attention mechanism following long-distance dependencies in the encoder self-attention in layer 5 of 6. Many of the attention heads attend to a distant dependency of the verb ‘making’, completing the phrase ‘making...more difficult’. Attentions here shown only for the word ‘making’. Different colors represent different heads. Best viewed in color."
+    ],
+    "chart_footnote": [],
+    "bbox": [
+      189,
+      125,
+      823,
+      378
+    ],
+    "page_idx": 12
+  }
+]
