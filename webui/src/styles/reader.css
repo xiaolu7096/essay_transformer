@@ -1,0 +1,713 @@
+/* ============================================================
+ * 阅读器样式 — 墨林墨绿配色
+ * 依赖 tokens.css 中的 [data-reader-theme] reader token
+ * 通过 reader-container 上的 data-reader-theme 属性切换
+ * ============================================================ */
+
+/* 字体大小变量 — 由 JS 控制 */
+.reader-container {
+  --reader-font-size: 15px;
+  --reader-line-height: 1.85;
+}
+
+/* ============================================================
+ * 页面结构
+ * ============================================================ */
+.reader-page {
+  width: 100%;
+  max-width: 100%;
+  margin: calc(-1 * var(--spacing-6)) calc(-1 * var(--spacing-6)) 0;
+  padding: 0 var(--spacing-6);
+  min-height: calc(100vh - 56px);
+  position: relative;
+  background: var(--reader-bg);
+  color: var(--reader-text);
+  transition: background-color var(--transition-normal),
+    color var(--transition-normal);
+}
+
+/* 顶部工具栏 */
+.reader-toolbar {
+  position: sticky;
+  top: 56px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  background: var(--reader-bg);
+  border-bottom: 1px solid var(--reader-border);
+  transition: background-color var(--transition-normal),
+    border-color var(--transition-normal);
+}
+
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.toolbar-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--reader-text-tertiary);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 4px 0;
+  transition: color var(--transition-fast);
+  white-space: nowrap;
+}
+
+.toolbar-link:hover {
+  color: var(--reader-brand);
+}
+
+.toolbar-icon {
+  font-size: 12px;
+}
+
+.toolbar-title {
+  font-size: 13px;
+  color: var(--reader-text-tertiary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 400px;
+}
+
+.toolbar-title strong {
+  color: var(--reader-text-secondary);
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+.fake-tag {
+  transform: scale(0.9);
+  transform-origin: left center;
+}
+
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--reader-border);
+  margin: 0 4px;
+}
+
+.toolbar-btn {
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--reader-border);
+  background: var(--reader-bg);
+  color: var(--reader-text-secondary);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all var(--transition-fast);
+}
+
+.toolbar-btn:hover:not(:disabled) {
+  color: var(--reader-brand);
+  border-color: var(--reader-text-tertiary);
+  background: var(--reader-bg-secondary);
+}
+
+.toolbar-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.download-btn {
+  padding: 0 14px;
+  font-weight: 600;
+}
+
+.theme-icon-btn {
+  width: 30px;
+  height: 30px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--reader-text-tertiary);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.theme-icon-btn:hover {
+  color: var(--reader-brand);
+  background: var(--reader-bg-secondary);
+}
+
+.theme-icon-btn.active {
+  color: var(--reader-brand);
+  background: var(--reader-brand-bg);
+  border-color: var(--reader-border);
+  font-weight: 600;
+}
+
+/* 阅读进度条 */
+.reader-progress-track {
+  height: 2px;
+  background: var(--reader-border);
+  position: sticky;
+  top: calc(56px + 46px);
+  z-index: 9;
+  margin: 0 calc(-1 * var(--spacing-6));
+}
+
+.reader-progress-fill {
+  height: 100%;
+  background: var(--reader-brand);
+  transition: width 0.1s linear;
+}
+
+/* 主体布局 */
+.reader-main {
+  display: flex;
+  gap: 48px;
+  align-items: flex-start;
+  padding: 32px 0 80px;
+  position: relative;
+}
+
+/* ============================================================
+ * 正文排版
+ * ============================================================ */
+.reader-article {
+  max-width: 720px;
+  margin: 0 auto;
+  color: var(--reader-text);
+  font-size: var(--reader-font-size);
+  line-height: var(--reader-line-height);
+  transition: color var(--transition-normal);
+  font-family: var(--font-serif);
+}
+
+.reader-article h2.section-title {
+  font-size: 1.4em;
+  font-weight: 700;
+  margin: 2em 0 1em;
+  padding-left: 12px;
+  border-left: 3px solid var(--reader-brand);
+  line-height: 1.4;
+  color: var(--reader-text);
+  font-family: var(--font-sans);
+}
+
+.reader-article p {
+  margin: 0.9em 0;
+  text-align: justify;
+  color: var(--reader-text);
+}
+
+.reader-article strong,
+.reader-article b {
+  font-weight: 600;
+  color: var(--reader-text);
+}
+
+.reader-article em,
+.reader-article i {
+  font-style: italic;
+}
+
+/* 公式块 — 左边条风格 */
+.reader-article .katex-display {
+  margin: 1.2em 0 !important;
+  padding: 14px 20px;
+  background: var(--reader-bg-secondary);
+  border-left: 2px solid var(--reader-brand);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  overflow-x: auto;
+}
+
+.reader-article .katex {
+  font-size: 1.05em;
+}
+
+/* 行内公式 */
+.reader-article .katex {
+  color: var(--reader-text);
+}
+
+/* 图片 */
+.reader-article img {
+  max-width: 100%;
+  display: block;
+  margin: 1.2em auto;
+  border-radius: var(--radius-md);
+  cursor: zoom-in;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.reader-article img:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.reader-article .art-missing {
+  margin: 1.2em 0;
+  padding: 32px;
+  border: 1px dashed var(--reader-border);
+  border-radius: var(--radius-md);
+  text-align: center;
+  color: var(--reader-text-tertiary);
+  background: var(--reader-bg-secondary);
+  font-size: 0.9em;
+}
+
+/* 表格 */
+.reader-article table {
+  border-collapse: collapse;
+  margin: 1.2em 0;
+  width: 100%;
+  font-size: 0.95em;
+  font-family: var(--font-sans);
+}
+
+.reader-article th,
+.reader-article td {
+  border: 1px solid var(--reader-border);
+  padding: 8px 14px;
+  text-align: left;
+}
+
+.reader-article th {
+  background: var(--reader-bg-secondary);
+  font-weight: 600;
+}
+
+/* 代码块 */
+.reader-article pre {
+  background: var(--reader-bg-secondary);
+  padding: 14px 18px;
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  margin: 1.2em 0;
+  font-size: 0.9em;
+}
+
+.reader-article code {
+  background: var(--reader-bg-secondary);
+  padding: 0.15em 0.45em;
+  border-radius: var(--radius-sm);
+  font-size: 0.9em;
+  font-family: var(--font-mono);
+  color: var(--reader-text-secondary);
+}
+
+.reader-article pre code {
+  background: transparent;
+  padding: 0;
+  font-size: inherit;
+}
+
+/* 引用块 */
+.reader-article blockquote {
+  margin: 1.2em 0;
+  padding: 0.4em 1.2em;
+  border-left: 3px solid var(--reader-border);
+  color: var(--reader-text-tertiary);
+  background: var(--reader-bg-secondary);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+/* 列表 */
+.reader-article ul,
+.reader-article ol {
+  margin: 0.9em 0;
+  padding-left: 1.8em;
+}
+
+.reader-article li {
+  margin: 0.4em 0;
+}
+
+/* 水平线 */
+.reader-article hr {
+  border: none;
+  border-top: 1px solid var(--reader-border);
+  margin: 2em 0;
+}
+
+/* 三级标题 */
+.reader-article h3 {
+  font-size: 1.15em;
+  font-weight: 600;
+  margin: 1.5em 0 0.8em;
+  color: var(--reader-text);
+  font-family: var(--font-sans);
+}
+
+/* 文章标题区 */
+.article-header {
+  margin-bottom: 24px;
+  font-family: var(--font-sans);
+}
+
+.article-title {
+  font-size: 1.8em;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 0 0 12px;
+  color: var(--reader-text);
+  letter-spacing: -0.3px;
+}
+
+/* ============================================================
+ * 阅读信息元数据
+ * ============================================================ */
+.reader-meta {
+  font-size: 0.85em;
+  color: var(--reader-text-tertiary);
+  padding-bottom: 20px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--reader-border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: center;
+}
+
+.reader-meta .meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.reader-meta .meta-divider {
+  width: 1px;
+  height: 14px;
+  background: var(--reader-border);
+}
+
+/* ============================================================
+ * 章节导航 — 小圆点风格
+ * ============================================================ */
+.reader-sidebar {
+  position: sticky;
+  top: 80px;
+  flex: 0 0 200px;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  padding: 8px 0;
+  font-family: var(--font-sans);
+}
+
+.reader-sidebar-label {
+  padding: 0 20px 10px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--reader-text-quaternary);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.reader-sidebar ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.reader-sidebar li {
+  position: relative;
+}
+
+.reader-sidebar li a {
+  display: block;
+  padding: 7px 20px 7px 30px;
+  font-size: 13px;
+  color: var(--reader-text-tertiary);
+  text-decoration: none;
+  line-height: 1.5;
+  transition: color var(--transition-fast);
+}
+
+.reader-sidebar li a::before {
+  content: "";
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--reader-text-quaternary);
+  opacity: 0.5;
+  transition: all var(--transition-fast);
+}
+
+.reader-sidebar li a:hover {
+  color: var(--reader-text);
+}
+
+.reader-sidebar li.active a {
+  color: var(--reader-brand);
+  font-weight: 600;
+}
+
+.reader-sidebar li.active a::before {
+  background: var(--reader-brand);
+  opacity: 1;
+  width: 7px;
+  height: 7px;
+  left: 13px;
+}
+
+/* ============================================================
+ * 折叠区动画 — CSS Grid trick
+ * ============================================================ */
+.reader-article details {
+  margin: 1.2em 0;
+  border-radius: var(--radius-md);
+  background: var(--reader-bg-secondary);
+  border: 1px solid var(--reader-border);
+  overflow: hidden;
+  font-family: var(--font-sans);
+}
+
+.reader-article details > summary {
+  cursor: pointer;
+  font-weight: 600;
+  padding: 12px 16px;
+  font-size: 0.95em;
+  color: var(--reader-text-secondary);
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  user-select: none;
+  transition: background-color var(--transition-fast);
+}
+
+.reader-article details > summary:hover {
+  background: var(--reader-bg-elevated);
+}
+
+.reader-article details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.reader-article details > summary::before {
+  content: "▸";
+  flex-shrink: 0;
+  font-size: 10px;
+  color: var(--reader-text-tertiary);
+  transition: transform var(--transition-normal);
+}
+
+.reader-article details[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+.reader-article details > summary::after {
+  content: attr(data-label);
+  margin-left: auto;
+  font-size: 11px;
+  padding: 2px 8px;
+  background: var(--reader-brand-bg);
+  color: var(--reader-brand);
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+/* 折叠内容动画 — 使用 grid 0fr → 1fr trick */
+.reader-article details .detail-inner {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--transition-slow) ease;
+}
+
+.reader-article details[open] .detail-inner {
+  grid-template-rows: 1fr;
+}
+
+.reader-article details .detail-inner > div {
+  overflow: hidden;
+}
+
+.reader-article details .detail-content {
+  padding: 0 16px 14px;
+  padding-left: 44px;
+  font-size: 0.95em;
+  color: var(--reader-text-tertiary);
+  line-height: 1.75;
+}
+
+/* ============================================================
+ * 图片灯箱
+ * ============================================================ */
+.image-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  background: rgba(0, 0, 0, 0.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: lightboxFadeIn var(--transition-normal) ease;
+  cursor: zoom-out;
+}
+
+@keyframes lightboxFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.image-lightbox img {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xl);
+  animation: lightboxZoomIn var(--transition-slow) ease;
+  cursor: default;
+}
+
+@keyframes lightboxZoomIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition-fast);
+}
+
+.lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* ============================================================
+ * 返回顶部按钮
+ * ============================================================ */
+.back-to-top {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--reader-bg-elevated);
+  color: var(--reader-text-secondary);
+  border: 1px solid var(--reader-border);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all var(--transition-normal);
+  z-index: var(--z-fixed);
+}
+
+.back-to-top.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.back-to-top:hover {
+  background: var(--reader-bg-secondary);
+  color: var(--reader-brand);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* ============================================================
+ * 响应式
+ * ============================================================ */
+@media (max-width: 900px) {
+  .reader-sidebar {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .reader-page {
+    margin: calc(-1 * var(--spacing-4)) calc(-1 * var(--spacing-4)) 0;
+    padding: 0 var(--spacing-4);
+  }
+
+  .reader-toolbar {
+    top: 48px;
+    padding: 8px 0;
+    gap: 8px;
+  }
+
+  .toolbar-title {
+    display: none;
+  }
+
+  .reader-progress-track {
+    top: calc(48px + 38px);
+    margin: 0 calc(-1 * var(--spacing-4));
+  }
+
+  .reader-main {
+    padding: 20px 0 60px;
+  }
+
+  .article-title {
+    font-size: 1.4em;
+  }
+
+  .back-to-top {
+    bottom: 20px;
+    right: 20px;
+  }
+}
+
+/* 来源标注：非斜体轻样式（T023，数字保持正体） */
+.reader-article .src-note {
+  font-style: normal;
+  font-size: 0.85em;
+  color: var(--reader-text-tertiary);
+}

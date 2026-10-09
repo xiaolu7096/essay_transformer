@@ -1,0 +1,80 @@
+[
+  {
+    "type": "text",
+    "text_level": 1,
+    "text": "Sample Paper: A Demonstration of the Pipeline",
+    "page_idx": 0
+  },
+  {
+    "type": "text",
+    "text_level": 2,
+    "text": "Abstract",
+    "page_idx": 0
+  },
+  {
+    "type": "text",
+    "text": "This is a sample paper used by the offline demo mode. It summarizes the key idea and results in a few sentences.",
+    "page_idx": 0
+  },
+  {
+    "type": "text",
+    "text_level": 2,
+    "text": "1 Introduction",
+    "page_idx": 1
+  },
+  {
+    "type": "text",
+    "text": "The introduction explains the motivation and the problem that the paper addresses.",
+    "page_idx": 1
+  },
+  {
+    "type": "equation",
+    "text": "$$y = W x + b$$",
+    "page_idx": 1
+  },
+  {
+    "type": "text",
+    "text_level": 2,
+    "text": "2 Method",
+    "page_idx": 2
+  },
+  {
+    "type": "text",
+    "text": "The method section describes the core approach and its main components.",
+    "page_idx": 2
+  },
+  {
+    "type": "text",
+    "text_level": 2,
+    "text": "3 Experiments",
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text": "Experiments compare the approach against baselines and report the main metrics.",
+    "page_idx": 3
+  },
+  {
+    "type": "table",
+    "table_body": "<table><tr><td>Model</td><td>Score</td></tr><tr><td>Baseline</td><td>80.1</td></tr><tr><td>Ours</td><td>89.7</td></tr></table>",
+    "table_caption": "Main results on the demo benchmark.",
+    "page_idx": 3
+  },
+  {
+    "type": "image",
+    "img_path": "images/sample.png",
+    "image_caption": "A demo figure: one-page overview of the pipeline.",
+    "page_idx": 3
+  },
+  {
+    "type": "text",
+    "text_level": 2,
+    "text": "References",
+    "page_idx": 4
+  },
+  {
+    "type": "ref_text",
+    "text": "[1] A. Author and B. Researcher. A foundational study. Journal of Demo, 2024.",
+    "page_idx": 4
+  }
+]

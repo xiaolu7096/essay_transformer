@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Phase 3 · 任务页视觉升级演示</title>
+<style>
+  /* ============================================================
+   * 设计 Token（与项目保持一致）
+   * ============================================================ */
+  :root, :root[data-theme="light"] {
+    --bg-primary: #faf8f3;
+    --bg-secondary: #f6f4ef;
+    --bg-tertiary: #ebe7db;
+    --bg-hover: #ebe7db;
+    --bg-active: #e0dbd0;
+    --bg-elevated: #fffdf7;
+
+    --text-primary: #3d3a33;
+    --text-secondary: #5c574b;
+    --text-tertiary: #8b8578;
+    --text-quaternary: #a8a296;
+    --text-inverse: #faf8f3;
+
+    --border-primary: #e0dbd0;
+    --border-secondary: #ebe7db;
+    --border-strong: #c8c2b4;
+
+    --brand-500: #3d7a52;
+    --brand-600: #2d5a3d;
+
+    --success-bg: #e8f0eb;
+    --success-text: #2d6a4f;
+    --success-border: #b8d0c2;
+    --warning-bg: #f5eddc;
+    --warning-text: #8b6914;
+    --warning-border: #e8d8b0;
+    --error-bg: #f0e4e4;
+    --error-text: #8b3a3a;
+    --error-border: #e0b8b8;
+    --info-bg: #e4ebf0;
+    --info-text: #3a5a6e;
+    --info-border: #b8c8d8;
+
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+      "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+
+    --font-size-xs: 12px;
+    --font-size-sm: 13px;
+    --font-size-base: 14px;
+    --font-size-md: 16px;
+    --font-size-lg: 18px;
+    --font-size-xl: 20px;
+    --font-size-2xl: 24px;
+
+    --spacing-1: 4px;
+    --spacing-2: 8px;
+    --spacing-3: 12px;
+    --spacing-4: 16px;
+    --spacing-5: 20px;
+    --spacing-6: 24px;
+    --spacing-8: 32px;
+    --spacing-10: 40px;
+    --spacing-12: 48px;
+
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 8px;
+    --radius-xl: 12px;
+    --radius-2xl: 16px;
+    --radius-full: 9999px;
+
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.07);
+
+    --transition-fast: 100ms ease;
+    --transition-normal: 150ms ease;
+    --transition-slow: 250ms ease;
+    --transition-slower: 300ms ease;
+  }
+
+  :root[data-theme="dark"] {
+    --bg-primary: #1a1f1b;
+    --bg-secondary: #232826;
+    --bg-tertiary: #2d332f;
+    --bg-hover: #2d332f;
+    --bg-active: #3a413c;
+    --bg-elevated: #232826;
+
+    --text-primary: #d0d4cc;
+    --text-secondary: #a8b0a5;
+    --text-tertiary: #7a8278;
+    --text-quaternary: #5a6058;
+    --text-inverse: #1a1f1b;
+
+    --border-primary: #2d332f;
+    --border-secondary: #232826;
+    --border-strong: #3a413c;
+
+    --brand-500: #7fc29a;
+    --brand-600: #9ad4b0;
+
+    --success-bg: #1e3a2a;
+    --success-text: #7fc29a;
+    --success-border: #2d5a3d;
+    --warning-bg: #3a2e1a;
+    --warning-text: #d4b87a;
+    --warning-border: #5a4a2a;
+    --error-bg: #3a1e1e;
+    --error-text: #d48a8a;
+    --error-border: #5a2a2a;
+    --info-bg: #1e2e3a;
+    --info-text: #8ab0d4;
+    --info-border: #2a405a;
+
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-sans);
+    font-size: var(--font-size-base);
+    line-height: 1.6;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    transition: background-color var(--transition-normal), color var(--transition-normal);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* 顶部导航 */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-primary);
+    box-shadow: var(--shadow-sm);
+  }
+  .topbar-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-6);
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .topbar-brand {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    font-weight: 700;
+    font-size: var(--font-size-md);
+  }
+  .topbar-brand-icon {
+    width: 28px; height: 28px;
+    background: var(--brand-500);
+    color: var(--text-inverse);
+    border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+  .topbar-nav {
+    display: flex;
+    gap: var(--spacing-2);
+  }
+  .topbar-nav a {
+    color: var(--text-tertiary);
+    text-decoration: none;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+    cursor: pointer;
+  }
+  .topbar-nav a:hover,
+  .topbar-nav a.active {
+    color: var(--text-primary);
+    background: var(--bg-tertiary);
+    font-weight: 600;
+  }
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+  }
+  .theme-toggle {
+    width: 32px; height: 32px;
+    border: 1px solid var(--border-primary);
+    background: var(--bg-primary);
+    color: var(--text-secondary);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all var(--transition-fast);
+  }
+  .theme-toggle:hover {
+    color: var(--text-primary);
+    background: var(--bg-hover);
+    border-color: var(--border-strong);
+  }
+  .user-area {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+  }
+  .user-avatar {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--bg-tertiary);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+  .user-name {
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  /* 主内容 */
+  .main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: var(--spacing-8) var(--spacing-6);
+  }
+
+  .page-header {
+    margin-bottom: var(--spacing-6);
+  }
+  .page-title {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    margin-bottom: var(--spacing-2);
+  }
+  .page-subtitle {
+    font-size: var(--font-size-base);
+    color: var(--text-tertiary);
+    margin-bottom: var(--spacing-4);
+  }
+  .page-actions {
+    display: flex;
+    gap: var(--spacing-3);
+    align-items: center;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 18px;
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all var(--transition-fast);
+    font-family: inherit;
+  }
+  .btn-primary {
+    background: var(--brand-500);
+    color: var(--text-inverse);
+    border-color: var(--brand-500);
+  }
+  .btn-primary:hover {
+    background: var(--brand-600);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
+  .btn-secondary {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    border-color: var(--border-primary);
+  }
+  .btn-secondary:hover {
+    background: var(--bg-hover);
+    border-color: var(--border-strong);
+  }
+  .btn-sm {
+    padding: 6px 14px;
+    font-size: 12px;
+  }
+
+  /* 标签 */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: var(--radius-full);
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid transparent;
+    line-height: 1.4;
+  }
+  .badge-success { background: var(--success-bg); color: var(--success-text); border-color: var(--success-border); }
+  .badge-warning { background: var(--warning-bg); color: var(--warning-text); border-color: var(--warning-border); }
+  .badge-error   { background: var(--error-bg);   color: var(--error-text);   border-color: var(--error-border); }
+  .badge-info    { background: var(--info-bg);    color: var(--info-text);    border-color: var(--info-border); }
+  .badge-muted   { background: var(--bg-tertiary); color: var(--text-tertiary); border-color: var(--border-primary); }
+
+  .badge-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .badge-dot.pulse {
+    animation: pulseDot 2s ease-in-out infinite;
+  }
+  @keyframes pulseDot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.3); }
+  }
+
+  /* 进度条 */
+  .progress-track {
+    height: 4px;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--brand-500);
+    border-radius: var(--radius-full);
+    transition: width 0.5s ease;
+  }
+  .progress-fill.success {
+    background: var(--success-text);
+  }
+  .progress-fill.error {
+    background: var(--error-text);
+  }
+
+  /* ============================================================
+   * 演示控制栏
+   * ============================================================ */
+  .demo-controls {
+    position: sticky;
+    top: 56px;
+    z-index: 50;
+    background: var(--bg-secondary);
+    padding: var(--spacing-3) 0;
+    border-bottom: 1px solid var(--border-secondary);
+    margin-bottom: var(--spacing-6);
+    display: flex;
+    gap: var(--spacing-3);
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .control-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-md);
+    padding: 3px;
+  }
+  .control-label {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin: 0 8px;
+    font-weight: 500;
+  }
+  .ctrl-btn {
+    height: 26px;
+    padding: 0 10px;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all var(--transition-fast);
+    font-family: inherit;
+  }
+  .ctrl-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+  }
+  .ctrl-btn.active {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  /* 板块标题 */
+  .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-quaternary);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin: var(--spacing-8) 0 var(--spacing-4);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+  }
+  .section-title::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--border-primary);
+  }
+
+  /* ============================================================
+   * 任务卡片（舒适版 B）
+   * ============================================================ */
+  .task-card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-5);
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-normal);
+    cursor: pointer;
+    margin-bottom: var(--spacing-4);
+  }
+  .task-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+    border-color: var(--border-strong);
+  }
+  .task-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--spacing-4);
+    margin-bottom: var(--spacing-3);
+  }
+  .task-card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.5;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .task-card-badge {
+    flex-shrink: 0;
+  }
+  .task-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-4);
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-bottom: var(--spacing-3);
+  }
+  .task-card-meta span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .task-card-progress {
+    margin-bottom: var(--spacing-3);
+  }
+  .task-card-progress .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-bottom: 6px;
+  }
+  .task-card-actions {
+    display: flex;
+    gap: var(--spacing-2);
+    padding-top: var(--spacing-3);
+    border-top: 1px solid var(--border-secondary);
+  }
+
+  /* 任务列表网格 */
+  .task-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: var(--spacing-4);
+  }
+  .task-grid .task-card {
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .task-grid .task-card-actions {
+    margin-top: auto;
+  }
+
+  /* ============================================================
+   * 空态（简约几何 A）
+   * ============================================================ */
+  .empty-state {
+    text-align: center;
+    padding: var(--spacing-12) var(--spacing-6);
+    background: var(--bg-primary);
+    border: 1px dashed var(--border-primary);
+    border-radius: var(--radius-xl);
+  }
+  .empty-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto var(--spacing-5);
+    position: relative;
+  }
+  .empty-icon svg {
+    width: 100%;
+    height: 100%;
+  }
+  .empty-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-2);
+  }
+  .empty-desc {
+    font-size: 14px;
+    color: var(--text-tertiary);
+    margin-bottom: var(--spacing-5);
+    max-width: 360px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.7;
+  }
+
+  /* ============================================================
+   * 骨架屏（shimmer）
+   * ============================================================ */
+  .skeleton-card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-5);
+  }
+  .skeleton-line {
+    height: 14px;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--spacing-3);
+    position: relative;
+    overflow: hidden;
+  }
+  .skeleton-line::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, var(--bg-secondary), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 1.8s infinite;
+  }
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  .skeleton-line.w-30 { width: 30%; }
+  .skeleton-line.w-50 { width: 50%; }
+  .skeleton-line.w-70 { width: 70%; }
+  .skeleton-line.w-90 { width: 90%; }
+  .skeleton-line.w-full { width: 100%; }
+  .skeleton-line.h-lg { height: 24px; }
+  .skeleton-line.h-sm { height: 10px; }
+
+  .skeleton-badge {
+    display: inline-block;
+    width: 60px;
+    height: 20px;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-full);
+    position: relative;
+    overflow: hidden;
+  }
+  .skeleton-badge::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, var(--bg-secondary), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 1.8s infinite;
+  }
+
+  /* ============================================================
+   * 任务详情页
+   * ============================================================ */
+  .detail-container {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-6);
+    box-shadow: var(--shadow-sm);
+  }
+  .detail-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--spacing-6);
+    margin-bottom: var(--spacing-6);
+    padding-bottom: var(--spacing-5);
+    border-bottom: 1px solid var(--border-secondary);
+  }
+  .detail-title-wrap {
+    flex: 1;
+    min-width: 0;
+  }
+  .detail-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--text-tertiary);
+    text-decoration: none;
+    margin-bottom: var(--spacing-3);
+    cursor: pointer;
+    transition: color var(--transition-fast);
+  }
+  .detail-back:hover {
+    color: var(--text-primary);
+  }
+  .detail-title {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-2);
+  }
+  .detail-submeta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-4);
+    font-size: 13px;
+    color: var(--text-tertiary);
+  }
+  .detail-submeta span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* 步骤条（数字圆圈 B） */
+  .stepper {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-8);
+    position: relative;
+  }
+  .stepper::before {
+    content: "";
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    right: 18px;
+    height: 2px;
+    background: var(--bg-tertiary);
+    z-index: 0;
+  }
+  .step {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+    padding: 0 8px;
+  }
+  .step-circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: var(--spacing-2);
+    background: var(--bg-primary);
+    border: 2px solid var(--border-primary);
+    color: var(--text-quaternary);
+    transition: all var(--transition-slow);
+  }
+  .step.completed .step-circle {
+    background: var(--brand-500);
+    border-color: var(--brand-500);
+    color: var(--text-inverse);
+  }
+  .step.current .step-circle {
+    background: var(--bg-primary);
+    border-color: var(--brand-500);
+    color: var(--brand-500);
+    box-shadow: 0 0 0 4px var(--bg-tertiary);
+    animation: stepPulse 2s ease-in-out infinite;
+  }
+  @keyframes stepPulse {
+    0%, 100% { box-shadow: 0 0 0 4px var(--bg-tertiary); }
+    50% { box-shadow: 0 0 0 8px var(--bg-tertiary); }
+  }
+  .step-label {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    text-align: center;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .step.completed .step-label {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+  .step.current .step-label {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+  .step-line {
+    position: absolute;
+    top: 18px;
+    left: calc(50% + 18px);
+    right: calc(-50% + 18px);
+    height: 2px;
+    background: var(--brand-500);
+    z-index: 0;
+    transition: width var(--transition-slow);
+  }
+  .step.completed .step-line {
+    background: var(--brand-500);
+  }
+  .step:last-child .step-line {
+    display: none;
+  }
+
+  /* 结果卡片（信息优先 A） */
+  .result-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-6);
+  }
+  .result-card-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+    margin-bottom: var(--spacing-5);
+  }
+  .result-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-lg);
+    background: var(--success-bg);
+    color: var(--success-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 700;
+  }
+  .result-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: var(--spacing-4);
+    margin-bottom: var(--spacing-5);
+  }
+  .stat-item {
+    padding: var(--spacing-4);
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-lg);
+  }
+  .stat-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+  .stat-label {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    font-weight: 500;
+  }
+  .result-actions {
+    display: flex;
+    gap: var(--spacing-3);
+    flex-wrap: wrap;
+  }
+
+  /* 失败状态（弱区分 A） */
+  .error-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-6);
+  }
+  .error-card-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+    margin-bottom: var(--spacing-4);
+  }
+  .error-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .error-icon.input { background: var(--warning-bg); color: var(--warning-text); }
+  .error-icon.system { background: var(--error-bg); color: var(--error-text); }
+  .error-icon.limit { background: var(--info-bg); color: var(--info-text); }
+
+  .error-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .error-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: var(--spacing-4);
+  }
+  .error-detail {
+    padding: var(--spacing-4);
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-lg);
+    font-size: 13px;
+    color: var(--text-tertiary);
+    font-family: monospace;
+    margin-bottom: var(--spacing-5);
+    white-space: pre-wrap;
+    line-height: 1.6;
+  }
+  .error-actions {
+    display: flex;
+    gap: var(--spacing-3);
+    flex-wrap: wrap;
+  }
+
+  /* 三类型并排展示 */
+  .error-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-4);
+  }
+
+  /* ============================================================
+   * 页脚
+   * ============================================================ */
+  .footer {
+    text-align: center;
+    padding: var(--spacing-8) var(--spacing-6);
+    color: var(--text-quaternary);
+    font-size: 12px;
+    border-top: 1px solid var(--border-primary);
+    margin-top: var(--spacing-12);
+  }
+</style>
+</head>
+<body>
+
+<!-- 顶部导航 -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-brand">
+      <div class="topbar-brand-icon">📝</div>
+      <span>易读论文 · Phase 3 演示</span>
+    </div>
+    <nav class="topbar-nav">
+      <a href="#list" class="active">任务列表</a>
+      <a href="#detail">任务详情</a>
+      <a href="#empty">空态 & 骨架</a>
+    </nav>
+    <div class="topbar-right">
+      <button class="theme-toggle" id="themeBtn" title="切换主题">☾</button>
+      <div class="user-area">
+        <div class="user-avatar">T</div>
+        <span class="user-name">test</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+
+  <!-- 控制栏 -->
+  <div class="demo-controls">
+    <div class="control-group">
+      <span class="control-label">任务状态</span>
+      <button class="ctrl-btn active" onclick="setTaskStatus('all')">全部</button>
+      <button class="ctrl-btn" onclick="setTaskStatus('running')">运行中</button>
+      <button class="ctrl-btn" onclick="setTaskStatus('success')">已完成</button>
+      <button class="ctrl-btn" onclick="setTaskStatus('failed')">失败</button>
+    </div>
+    <div class="control-group">
+      <span class="control-label">详情进度</span>
+      <button class="ctrl-btn" onclick="setStep(2)">第2步</button>
+      <button class="ctrl-btn active" onclick="setStep(4)">第4步</button>
+      <button class="ctrl-btn" onclick="setStep(6)">全部完成</button>
+      <button class="ctrl-btn" onclick="setStep(-1)">失败</button>
+    </div>
+    <div class="control-group">
+      <span class="control-label">失败类型</span>
+      <button class="ctrl-btn active" onclick="setErrorType('input')">输入类</button>
+      <button class="ctrl-btn" onclick="setErrorType('system')">系统类</button>
+      <button class="ctrl-btn" onclick="setErrorType('limit')">超限类</button>
+    </div>
+  </div>
+
+  <!-- ===============================================
+       任务列表页
+       =============================================== -->
+  <div class="section-title">任务列表 · Task List</div>
+
+  <div class="page-header">
+    <h1 class="page-title">我的任务</h1>
+    <p class="page-subtitle">管理你的论文转写任务，查看进度和结果</p>
+    <div class="page-actions">
+      <button class="btn btn-primary">+ 新建任务</button>
+      <button class="btn btn-secondary">刷新</button>
+    </div>
+  </div>
+
+  <div class="task-grid" id="taskGrid">
+    <!-- 已完成卡片 -->
+    <div class="task-card" data-status="success">
+      <div class="task-card-header">
+        <div class="task-card-title">Attention Is All You Need — Transformer 架构论文转写</div>
+        <span class="badge badge-success task-card-badge">
+          <span class="badge-dot"></span>已完成
+        </span>
+      </div>
+      <div class="task-card-meta">
+        <span>📄 7 章 · 8,500 字</span>
+        <span>⏱ 3 分 24 秒</span>
+        <span>🕐 2 小时前</span>
+      </div>
+      <div class="task-card-progress">
+        <div class="progress-track">
+          <div class="progress-fill success" style="width: 100%"></div>
+        </div>
+      </div>
+      <div class="task-card-actions">
+        <button class="btn btn-primary btn-sm">阅读</button>
+        <button class="btn btn-secondary btn-sm">下载</button>
+        <button class="btn btn-secondary btn-sm" style="margin-left: auto;">详情 →</button>
+      </div>
+    </div>
+
+    <!-- 运行中卡片 -->
+    <div class="task-card" data-status="running">
+      <div class="task-card-header">
+        <div class="task-card-title">BERT: Pre-training of Deep Bidirectional Transformers</div>
+        <span class="badge badge-info task-card-badge">
+          <span class="badge-dot pulse"></span>进行中
+        </span>
+      </div>
+      <div class="task-card-meta">
+        <span>⚙ 转写第 3 章 / 共 7 章</span>
+        <span>🕐 开始于 5 分钟前</span>
+      </div>
+      <div class="task-card-progress">
+        <div class="progress-label">
+          <span>转写阶段</span>
+          <span>45%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width: 45%"></div>
+        </div>
+      </div>
+      <div class="task-card-actions">
+        <button class="btn btn-secondary btn-sm">查看详情</button>
+        <button class="btn btn-secondary btn-sm" style="margin-left: auto; color: var(--error-text);">
+          取消
+        </button>
+      </div>
+    </div>
+
+    <!-- 排队中卡片 -->
+    <div class="task-card" data-status="running">
+      <div class="task-card-header">
+        <div class="task-card-title">GPT-3: Language Models are Few-Shot Learners</div>
+        <span class="badge badge-warning task-card-badge">
+          <span class="badge-dot"></span>排队中
+        </span>
+      </div>
+      <div class="task-card-meta">
+        <span>⏳ 前方还有 2 个任务</span>
+        <span>🕐 1 分钟前</span>
+      </div>
+      <div class="task-card-progress">
+        <div class="progress-label">
+          <span>等待中</span>
+          <span>0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width: 0%"></div>
+        </div>
+      </div>
+      <div class="task-card-actions">
+        <button class="btn btn-secondary btn-sm">查看详情</button>
+        <button class="btn btn-secondary btn-sm" style="margin-left: auto; color: var(--error-text);">
+          取消
+        </button>
+      </div>
+    </div>
+
+    <!-- 失败卡片 -->
+    <div class="task-card" data-status="failed">
+      <div class="task-card-header">
+        <div class="task-card-title">某扫描版论文.pdf — 无法识别文字层</div>
+        <span class="badge badge-error task-card-badge">
+          <span class="badge-dot"></span>失败
+        </span>
+      </div>
+      <div class="task-card-meta">
+        <span>⚠ 输入类错误</span>
+        <span>🕐 昨天</span>
+      </div>
+      <div class="task-card-progress">
+        <div class="progress-track">
+          <div class="progress-fill error" style="width: 20%"></div>
+        </div>
+      </div>
+      <div class="task-card-actions">
+        <button class="btn btn-primary btn-sm">重新提交</button>
+        <button class="btn btn-secondary btn-sm" style="margin-left: auto;">详情 →</button>
+      </div>
+    </div>
+
+    <!-- 已完成卡片 2 -->
+    <div class="task-card" data-status="success">
+      <div class="task-card-header">
+        <div class="task-card-title">Denoising Diffusion Probabilistic Models — DDPM 论文</div>
+        <span class="badge badge-success task-card-badge">
+          <span class="badge-dot"></span>已完成
+        </span>
+      </div>
+      <div class="task-card-meta">
+        <span>📄 8 章 · 10,200 字</span>
+        <span>⏱ 4 分 12 秒</span>
+        <span>🕐 昨天</span>
+      </div>
+      <div class="task-card-progress">
+        <div class="progress-track">
+          <div class="progress-fill success" style="width: 100%"></div>
+        </div>
+      </div>
+      <div class="task-card-actions">
+        <button class="btn btn-primary btn-sm">阅读</button>
+        <button class="btn btn-secondary btn-sm">下载</button>
+        <button class="btn btn-secondary btn-sm" style="margin-left: auto;">详情 →</button>
+      </div>
+    </div>
+
+    <!-- 运行中卡片 2 -->
+    <div class="task-card" data-status="running">
+      <div class="task-card-header">
+        <div class="task-card-title">Stable Diffusion 开源实现技术报告</div>
+        <span class="badge badge-info task-card-badge">
+          <span class="badge-dot pulse"></span>进行中
+        </span>
+      </div>
+      <div class="task-card-meta">
+        <span>⚙ 归一化阶段</span>
+        <span>🕐 开始于 2 分钟前</span>
+      </div>
+      <div class="task-card-progress">
+        <div class="progress-label">
+          <span>解析阶段</span>
+          <span>25%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" style="width: 25%"></div>
+        </div>
+      </div>
+      <div class="task-card-actions">
+        <button class="btn btn-secondary btn-sm">查看详情</button>
+        <button class="btn btn-secondary btn-sm" style="margin-left: auto; color: var(--error-text);">
+          取消
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===============================================
+       空态 & 骨架屏
+       =============================================== -->
+  <div class="section-title" id="empty">空态 & 骨架屏 · Empty & Skeleton</div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-6);">
+    <!-- 空态 -->
+    <div>
+      <div style="font-size:13px; font-weight:600; color:var(--text-tertiary); margin-bottom:var(--spacing-3);">
+        空态（简约几何）
+      </div>
+      <div class="empty-state">
+        <div class="empty-icon">
+          <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="12" y="8" width="40" height="48" rx="4" stroke="currentColor" stroke-width="2" fill="var(--bg-secondary)"/>
+            <path d="M20 20h24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M20 28h24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M20 36h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M20 44h20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="4 4"/>
+            <circle cx="44" cy="44" r="10" fill="var(--bg-tertiary)" stroke="currentColor" stroke-width="2" stroke-dasharray="3 3"/>
+            <path d="M44 40v4l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="empty-title">还没有转写任务</div>
+        <div class="empty-desc">
+          上传一篇 PDF 或粘贴 arXiv 链接，AI 会自动将论文转写为结构化的中文易读版
+        </div>
+        <button class="btn btn-primary">+ 新建任务</button>
+      </div>
+    </div>
+
+    <!-- 骨架屏 -->
+    <div>
+      <div style="font-size:13px; font-weight:600; color:var(--text-tertiary); margin-bottom:var(--spacing-3);">
+        骨架屏加载（shimmer 动画）
+      </div>
+      <div class="skeleton-card" style="margin-bottom: var(--spacing-3);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:var(--spacing-3);">
+          <div class="skeleton-line w-50 h-lg" style="margin-bottom:0;"></div>
+          <div class="skeleton-badge"></div>
+        </div>
+        <div class="skeleton-line w-70 h-sm"></div>
+        <div class="skeleton-line w-40 h-sm"></div>
+        <div class="skeleton-line w-full" style="margin-top: var(--spacing-3);"></div>
+      </div>
+      <div class="skeleton-card" style="margin-bottom: var(--spacing-3);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:var(--spacing-3);">
+          <div class="skeleton-line w-60 h-lg" style="margin-bottom:0;"></div>
+          <div class="skeleton-badge"></div>
+        </div>
+        <div class="skeleton-line w-50 h-sm"></div>
+        <div class="skeleton-line w-30 h-sm"></div>
+        <div class="skeleton-line w-full" style="margin-top: var(--spacing-3);"></div>
+      </div>
+      <div class="skeleton-card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:var(--spacing-3);">
+          <div class="skeleton-line w-40 h-lg" style="margin-bottom:0;"></div>
+          <div class="skeleton-badge"></div>
+        </div>
+        <div class="skeleton-line w-80 h-sm"></div>
+        <div class="skeleton-line w-50 h-sm"></div>
+        <div class="skeleton-line w-full" style="margin-top: var(--spacing-3);"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===============================================
+       任务详情页
+       =============================================== -->
+  <div class="section-title" id="detail">任务详情 · Task Detail</div>
+
+  <div class="detail-container" id="detailContainer">
+    <div class="detail-header">
+      <div class="detail-title-wrap">
+        <div class="detail-back">← 返回任务列表</div>
+        <h1 class="detail-title">Attention Is All You Need — Transformer 架构论文转写</h1>
+        <div class="detail-submeta">
+          <span>📄 PDF 上传</span>
+          <span>🕐 创建于 2024-01-15 14:30</span>
+          <span>⏱ 耗时 3 分 24 秒</span>
+        </div>
+      </div>
+      <span class="badge badge-success" style="flex-shrink: 0;">
+        <span class="badge-dot"></span>已完成
+      </span>
+    </div>
+
+    <!-- 步骤条 -->
+    <div class="stepper" id="stepper">
+      <div class="step completed" data-step="1">
+        <div class="step-circle">✓</div>
+        <div class="step-label">摄取</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step completed" data-step="2">
+        <div class="step-circle">✓</div>
+        <div class="step-label">解析</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step completed" data-step="3">
+        <div class="step-circle">✓</div>
+        <div class="step-label">归一化</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step current" data-step="4">
+        <div class="step-circle">4</div>
+        <div class="step-label">规划</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step" data-step="5">
+        <div class="step-circle">5</div>
+        <div class="step-label">转写</div>
+        <div class="step-line"></div>
+      </div>
+      <div class="step" data-step="6">
+        <div class="step-circle">6</div>
+        <div class="step-label">拼装</div>
+      </div>
+    </div>
+
+    <!-- 结果卡片（成功态） -->
+    <div id="resultCard">
+      <div class="result-card">
+        <div class="result-card-header">
+          <div class="result-icon">✓</div>
+          <div>
+            <div class="result-title">转写完成</div>
+            <div style="font-size:13px; color:var(--text-tertiary);">论文已成功转为结构化中文易读版</div>
+          </div>
+        </div>
+        <div class="result-stats">
+          <div class="stat-item">
+            <div class="stat-value">7</div>
+            <div class="stat-label">章节数</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">8.5k</div>
+            <div class="stat-label">总字数</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">25<span style="font-size:14px;">分钟</span></div>
+            <div class="stat-label">预计阅读</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">3:24</div>
+            <div class="stat-label">执行耗时</div>
+          </div>
+        </div>
+        <div class="result-actions">
+          <button class="btn btn-primary">在线阅读</button>
+          <button class="btn btn-secondary">下载成品 (zip)</button>
+          <button class="btn btn-secondary" style="margin-left: auto;">重新转写</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===============================================
+       失败三类型
+       =============================================== -->
+  <div class="section-title">失败三分类 · Error States（弱区分）</div>
+
+  <div class="error-grid">
+    <!-- 输入类 -->
+    <div class="error-card">
+      <div class="error-card-header">
+        <div class="error-icon input">!</div>
+        <div>
+          <div class="error-title">输入类错误</div>
+          <div style="font-size:12px; color:var(--text-tertiary);">Input Error</div>
+        </div>
+      </div>
+      <div class="error-desc">
+        上传的文件不是有效的 PDF，或 PDF 为扫描版缺少文字层，请检查文件后重新提交。
+      </div>
+      <div class="error-detail">code: invalid_pdf
+stage: parsed
+hint: 请提供可提取文字的电子版 PDF</div>
+      <div class="error-actions">
+        <button class="btn btn-primary">重新提交</button>
+        <button class="btn btn-secondary">返回列表</button>
+      </div>
+    </div>
+
+    <!-- 系统类 -->
+    <div class="error-card">
+      <div class="error-card-header">
+        <div class="error-icon system">✕</div>
+        <div>
+          <div class="error-title">系统类错误</div>
+          <div style="font-size:12px; color:var(--text-tertiary);">System Error</div>
+        </div>
+      </div>
+      <div class="error-desc">
+        转写过程中遇到内部系统错误，已自动记录日志，请稍后重试。若多次失败请联系管理员。
+      </div>
+      <div class="error-detail">code: mineru_failed
+stage: parsed
+hint: MinerU 解析失败，请稍后重试</div>
+      <div class="error-actions">
+        <button class="btn btn-primary">重试</button>
+        <button class="btn btn-secondary">返回列表</button>
+      </div>
+    </div>
+
+    <!-- 超限类 -->
+    <div class="error-card">
+      <div class="error-card-header">
+        <div class="error-icon limit">⌘</div>
+        <div>
+          <div class="error-title">超限类错误</div>
+          <div style="font-size:12px; color:var(--text-tertiary);">Limit Exceeded</div>
+        </div>
+      </div>
+      <div class="error-desc">
+        今日转写额度已用完（10 次/天），请升级套餐或明日再来。
+      </div>
+      <div class="error-detail">code: quota_exceeded
+stage: planned
+hint: 今日已使用 10/10 次，下次重置 00:00</div>
+      <div class="error-actions">
+        <button class="btn btn-primary">升级套餐</button>
+        <button class="btn btn-secondary">返回列表</button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer class="footer">
+  易读论文 · Phase 3 任务页视觉升级演示 · Spec 004
+</footer>
+
+<script>
+  // ===== 全局主题切换 =====
+  const themeBtn = document.getElementById('themeBtn');
+  let globalTheme = document.documentElement.getAttribute('data-theme') || 'light';
+
+  function updateThemeIcon() {
+    themeBtn.textContent = globalTheme === 'dark' ? '☼' : '☾';
+    themeBtn.title = globalTheme === 'dark' ? '切换到亮色主题' : '切换到暗色主题';
+  }
+
+  themeBtn.addEventListener('click', () => {
+    globalTheme = globalTheme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', globalTheme);
+    updateThemeIcon();
+  });
+  updateThemeIcon();
+
+  // ===== 导航高亮 =====
+  document.querySelectorAll('.topbar-nav a').forEach(a => {
+    a.addEventListener('click', () => {
+      document.querySelectorAll('.topbar-nav a').forEach(x => x.classList.remove('active'));
+      a.classList.add('active');
+    });
+  });
+
+  // ===== 任务状态筛选 =====
+  function setTaskStatus(status) {
+    document.querySelectorAll('.demo-controls .control-group:first-child .ctrl-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+
+    const cards = document.querySelectorAll('.task-card');
+    cards.forEach(card => {
+      if (status === 'all') {
+        card.style.display = '';
+      } else {
+        card.style.display = card.dataset.status === status ? '' : 'none';
+      }
+    });
+  }
+
+  // ===== 步骤条切换 =====
+  function setStep(stepNum) {
+    const steps = document.querySelectorAll('.step');
+    const resultCard = document.getElementById('resultCard');
+    const detailBadge = document.querySelector('.detail-container .badge');
+
+    // 更新按钮状态
+    document.querySelectorAll('.demo-controls .control-group:nth-child(2) .ctrl-btn').forEach(b => b.classList.remove('active'));
+    if (event && event.target) event.target.classList.add('active');
+
+    if (stepNum === -1) {
+      // 失败态
+      steps.forEach((s, i) => {
+        s.classList.remove('completed', 'current');
+        if (i < 2) s.classList.add('completed');
+        if (i === 2) {
+          s.classList.add('current');
+          s.querySelector('.step-circle').textContent = '!';
+          s.querySelector('.step-circle').style.background = 'var(--error-bg)';
+          s.querySelector('.step-circle').style.borderColor = 'var(--error-text)';
+          s.querySelector('.step-circle').style.color = 'var(--error-text)';
+          s.querySelector('.step-circle').style.animation = 'none';
+        }
+      });
+      resultCard.innerHTML = `
+        <div class="error-card">
+          <div class="error-card-header">
+            <div class="error-icon system">✕</div>
+            <div>
+              <div class="error-title">转写失败</div>
+              <div style="font-size:12px; color:var(--text-tertiary);">解析阶段遇到系统错误</div>
+            </div>
+          </div>
+          <div class="error-desc">
+            论文解析过程中遇到内部错误，已自动记录日志，请稍后重试。
+          </div>
+          <div class="error-actions">
+            <button class="btn btn-primary">重新提交</button>
+            <button class="btn btn-secondary">返回列表</button>
+          </div>
+        </div>
+      `;
+      detailBadge.className = 'badge badge-error';
+      detailBadge.innerHTML = '<span class="badge-dot"></span>失败';
+      return;
+    }
+
+    // 重置 step-circle 样式
+    steps.forEach((s, i) => {
+      const circle = s.querySelector('.step-circle');
+      circle.style = '';
+      circle.textContent = i < 3 ? '✓' : (i + 1).toString();
+    });
+
+    steps.forEach((s, i) => {
+      s.classList.remove('completed', 'current');
+      if (i < stepNum) s.classList.add('completed');
+      if (i === stepNum - 1) s.classList.add('current');
+    });
+
+    if (stepNum >= 6) {
+      // 成功态
+      resultCard.innerHTML = `
+        <div class="result-card">
+          <div class="result-card-header">
+            <div class="result-icon">✓</div>
+            <div>
+              <div class="result-title">转写完成</div>
+              <div style="font-size:13px; color:var(--text-tertiary);">论文已成功转为结构化中文易读版</div>
+            </div>
+          </div>
+          <div class="result-stats">
+            <div class="stat-item">
+              <div class="stat-value">7</div>
+              <div class="stat-label">章节数</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">8.5k</div>
+              <div class="stat-label">总字数</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">25<span style="font-size:14px;">分钟</span></div>
+              <div class="stat-label">预计阅读</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">3:24</div>
+              <div class="stat-label">执行耗时</div>
+            </div>
+          </div>
+          <div class="result-actions">
+            <button class="btn btn-primary">在线阅读</button>
+            <button class="btn btn-secondary">下载成品 (zip)</button>
+            <button class="btn btn-secondary" style="margin-left: auto;">重新转写</button>
+          </div>
+        </div>
+      `;
+      detailBadge.className = 'badge badge-success';
+      detailBadge.innerHTML = '<span class="badge-dot"></span>已完成';
+    } else {
+      // 进行中态
+      resultCard.innerHTML = `
+        <div style="padding: var(--spacing-6); background: var(--bg-secondary); border-radius: var(--radius-xl); border: 1px solid var(--border-primary);">
+          <div style="display:flex; align-items:center; gap:var(--spacing-3); margin-bottom:var(--spacing-4);">
+            <span class="badge badge-info"><span class="badge-dot pulse"></span>进行中</span>
+            <span style="font-size:13px; color:var(--text-tertiary);">第 ${stepNum} 阶段 / 共 6 阶段</span>
+          </div>
+          <div class="progress-track" style="margin-bottom: var(--spacing-3);">
+            <div class="progress-fill" style="width: ${Math.round(stepNum / 6 * 100)}%"></div>
+          </div>
+          <div style="font-size:12px; color:var(--text-tertiary);">正在处理中，请稍候…</div>
+        </div>
+      `;
+      detailBadge.className = 'badge badge-info';
+      detailBadge.innerHTML = '<span class="badge-dot pulse"></span>进行中';
+    }
+  }
+
+  // ===== 失败类型切换（仅用于详情页演示）=====
+  function setErrorType(type) {
+    // 更新按钮状态
+    document.querySelectorAll('.demo-controls .control-group:nth-child(3) .ctrl-btn').forEach(b => b.classList.remove('active'));
+    if (event && event.target) event.target.classList.add('active');
+
+    // 同时把详情页切到失败态并显示对应类型
+    setStep(-1);
+
+    const resultCard = document.getElementById('resultCard');
+    const types = {
+      input: { icon: '!', iconClass: 'input', title: '输入类错误', desc: '上传的文件不是有效的 PDF，或 PDF 为扫描版缺少文字层。', code: 'invalid_pdf' },
+      system: { icon: '✕', iconClass: 'system', title: '系统类错误', desc: '转写过程中遇到内部系统错误，请稍后重试。', code: 'mineru_failed' },
+      limit: { icon: '⌘', iconClass: 'limit', title: '超限类错误', desc: '今日转写额度已用完，请升级套餐或明日再来。', code: 'quota_exceeded' },
+    };
+    const t = types[type];
+    resultCard.innerHTML = `
+      <div class="error-card">
+        <div class="error-card-header">
+          <div class="error-icon ${t.iconClass}">${t.icon}</div>
+          <div>
+            <div class="error-title">${t.title}</div>
+            <div style="font-size:12px; color:var(--text-tertiary);">转写失败</div>
+          </div>
+        </div>
+        <div class="error-desc">${t.desc}</div>
+        <div class="error-detail">code: ${t.code}
+stage: parsed
+hint: 点击「重试」或「重新提交」尝试解决</div>
+        <div class="error-actions">
+          <button class="btn btn-primary">${type === 'limit' ? '升级套餐' : '重新提交'}</button>
+          <button class="btn btn-secondary">返回列表</button>
+        </div>
+      </div>
+    `;
+  }
+</script>
+
+</body>
+</html>

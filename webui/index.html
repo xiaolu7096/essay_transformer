@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect x='1' y='1' width='38' height='38' rx='10' fill='%232f7d54'/%3E%3Cpath d='M11.5 27.5c0-8 5.5-13.5 13-15.5 1.8 7.5-1.8 14.5-8.4 16.3-2.7 0-4.6-.8-4.6-.8z' fill='%23ffffff' opacity='0.96'/%3E%3C/svg%3E" />
+    <title>纸慧 PaperWise</title>
+    <script>
+      // 同步设置主题，防止暗色模式刷新白屏闪烁（FOUC）
+      (function () {
+        try {
+          var stored = localStorage.getItem('app-theme');
+          var theme;
+          if (stored === 'light' || stored === 'dark') {
+            theme = stored;
+          } else {
+            theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch (e) {
+          // localStorage 不可用时回退到浅色
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

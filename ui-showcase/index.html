@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>UI 设计系统 & 阅读器样式展示</title>
+<style>
+  /* ============================================================
+   * 设计 Token（与项目 tokens.css 保持一致）
+   * ============================================================ */
+  :root,
+  :root[data-theme="light"] {
+    --bg-primary: #faf8f3;
+    --bg-secondary: #f6f4ef;
+    --bg-tertiary: #ebe7db;
+    --bg-hover: #ebe7db;
+    --bg-active: #e0dbd0;
+    --bg-elevated: #fffdf7;
+    --bg-overlay: rgba(61, 58, 51, 0.5);
+
+    --text-primary: #3d3a33;
+    --text-secondary: #5c574b;
+    --text-tertiary: #8b8578;
+    --text-quaternary: #a8a296;
+    --text-inverse: #faf8f3;
+    --text-disabled: #c8c2b4;
+
+    --border-primary: #e0dbd0;
+    --border-secondary: #ebe7db;
+    --border-strong: #c8c2b4;
+    --border-focus: #3d7a52;
+
+    --brand-50: #f0f5f2;
+    --brand-100: #dce8e1;
+    --brand-200: #b8d0c2;
+    --brand-500: #3d7a52;
+    --brand-600: #2d5a3d;
+    --brand-700: #1e4830;
+
+    --success-bg: #e8f0eb;
+    --success-text: #2d6a4f;
+    --success-border: #b8d0c2;
+    --warning-bg: #f5eddc;
+    --warning-text: #8b6914;
+    --warning-border: #e8d8b0;
+    --error-bg: #f0e4e4;
+    --error-text: #8b3a3a;
+    --error-border: #e0b8b8;
+    --info-bg: #e4ebf0;
+    --info-text: #3a5a6e;
+    --info-border: #b8c8d8;
+
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+      "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+    --font-serif: Georgia, "Songti SC", SimSun, serif;
+
+    --font-size-xs: 12px;
+    --font-size-sm: 13px;
+    --font-size-base: 14px;
+    --font-size-md: 16px;
+    --font-size-lg: 18px;
+    --font-size-xl: 20px;
+    --font-size-2xl: 24px;
+    --font-size-3xl: 30px;
+
+    --line-height-tight: 1.4;
+    --line-height-normal: 1.6;
+    --line-height-relaxed: 1.8;
+
+    --spacing-1: 4px;
+    --spacing-2: 8px;
+    --spacing-3: 12px;
+    --spacing-4: 16px;
+    --spacing-5: 20px;
+    --spacing-6: 24px;
+    --spacing-8: 32px;
+    --spacing-10: 40px;
+    --spacing-12: 48px;
+    --spacing-16: 64px;
+
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 8px;
+    --radius-xl: 12px;
+    --radius-2xl: 16px;
+    --radius-full: 9999px;
+
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.07);
+
+    --transition-fast: 100ms ease;
+    --transition-normal: 150ms ease;
+    --transition-slow: 250ms ease;
+    --transition-slower: 300ms ease;
+  }
+
+  :root[data-theme="dark"] {
+    --bg-primary: #1a1f1b;
+    --bg-secondary: #232826;
+    --bg-tertiary: #2d332f;
+    --bg-hover: #2d332f;
+    --bg-active: #3a413c;
+    --bg-elevated: #232826;
+    --bg-overlay: rgba(0, 0, 0, 0.7);
+
+    --text-primary: #d0d4cc;
+    --text-secondary: #a8b0a5;
+    --text-tertiary: #7a8278;
+    --text-quaternary: #5a6058;
+    --text-inverse: #1a1f1b;
+    --text-disabled: #3a413c;
+
+    --border-primary: #2d332f;
+    --border-secondary: #232826;
+    --border-strong: #3a413c;
+    --border-focus: #7fc29a;
+
+    --brand-50: #2a3830;
+    --brand-100: #3a4d40;
+    --brand-200: #4d6253;
+    --brand-500: #7fc29a;
+    --brand-600: #9ad4b0;
+    --brand-700: #b8e6c8;
+
+    --success-bg: #1e3a2a;
+    --success-text: #7fc29a;
+    --success-border: #2d5a3d;
+    --warning-bg: #3a2e1a;
+    --warning-text: #d4b87a;
+    --warning-border: #5a4a2a;
+    --error-bg: #3a1e1e;
+    --error-text: #d48a8a;
+    --error-border: #5a2a2a;
+    --info-bg: #1e2e3a;
+    --info-text: #8ab0d4;
+    --info-border: #2a405a;
+
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6), 0 8px 10px -6px rgb(0 0 0 / 0.5);
+  }
+
+  /* 减少动效 */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* ============================================================
+   * 全局基础样式
+   * ============================================================ */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-sans);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-normal);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    transition: background-color var(--transition-normal), color var(--transition-normal);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* 顶部导航 */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-primary);
+    box-shadow: var(--shadow-sm);
+  }
+  .topbar-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-6);
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .topbar-brand {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    font-weight: 700;
+    font-size: var(--font-size-md);
+  }
+  .topbar-brand-icon {
+    width: 28px; height: 28px;
+    background: var(--brand-500);
+    color: var(--text-inverse);
+    border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+  .topbar-nav {
+    display: flex;
+    gap: var(--spacing-2);
+  }
+  .topbar-nav a {
+    color: var(--text-tertiary);
+    text-decoration: none;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+  }
+  .topbar-nav a:hover,
+  .topbar-nav a.active {
+    color: var(--text-primary);
+    background: var(--bg-tertiary);
+    font-weight: 600;
+  }
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+  }
+  .theme-toggle {
+    width: 32px; height: 32px;
+    border: 1px solid var(--border-primary);
+    background: var(--bg-primary);
+    color: var(--text-secondary);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all var(--transition-fast);
+  }
+  .theme-toggle:hover {
+    color: var(--text-primary);
+    background: var(--bg-hover);
+    border-color: var(--border-strong);
+  }
+
+  /* 主内容 */
+  .main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--spacing-8) var(--spacing-6);
+  }
+
+  /* 章节标题 */
+  .section-heading {
+    margin-bottom: var(--spacing-6);
+    padding-bottom: var(--spacing-4);
+    border-bottom: 1px solid var(--border-primary);
+  }
+  .section-heading h2 {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-2);
+  }
+  .section-heading p {
+    font-size: var(--font-size-base);
+    color: var(--text-tertiary);
+  }
+
+  /* 卡片 */
+  .card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-6);
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-normal);
+  }
+  .card:hover {
+    box-shadow: var(--shadow-md);
+  }
+
+  /* ============================================================
+   * 设计系统展示
+   * ============================================================ */
+  .design-tokens {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-6);
+    margin-bottom: var(--spacing-12);
+  }
+
+  .token-card h3 {
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    margin-bottom: var(--spacing-4);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+  }
+  .token-card h3::before {
+    content: "";
+    width: 3px;
+    height: 16px;
+    background: var(--brand-500);
+    border-radius: 2px;
+  }
+
+  /* 色板 */
+  .color-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-2);
+  }
+  .color-swatch {
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--border-primary);
+  }
+  .color-swatch .color-block {
+    height: 48px;
+  }
+  .color-swatch .color-label {
+    padding: 6px 8px;
+    font-size: 11px;
+    background: var(--bg-secondary);
+    color: var(--text-tertiary);
+    font-family: monospace;
+    text-align: center;
+  }
+
+  /* 字体层级 */
+  .type-scale {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-3);
+  }
+  .type-item {
+    display: flex;
+    align-items: baseline;
+    gap: var(--spacing-3);
+    padding-bottom: var(--spacing-2);
+    border-bottom: 1px solid var(--border-secondary);
+  }
+  .type-item:last-child {
+    border-bottom: none;
+  }
+  .type-sample {
+    flex: 1;
+    color: var(--text-primary);
+  }
+  .type-label {
+    font-size: 11px;
+    color: var(--text-quaternary);
+    font-family: monospace;
+    min-width: 80px;
+    text-align: right;
+  }
+
+  /* 间距展示 */
+  .spacing-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+    margin-bottom: var(--spacing-2);
+  }
+  .spacing-bar {
+    height: 20px;
+    background: var(--brand-100);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-primary);
+  }
+  .spacing-label {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    font-family: monospace;
+    min-width: 60px;
+  }
+
+  /* 圆角 + 阴影 */
+  .radius-grid,
+  .shadow-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-4);
+  }
+  .radius-item,
+  .shadow-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-2);
+  }
+  .radius-box {
+    width: 64px;
+    height: 64px;
+    background: var(--brand-500);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-inverse);
+    font-size: 11px;
+  }
+  .shadow-box {
+    width: 80px;
+    height: 64px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-tertiary);
+    font-size: 11px;
+  }
+  .radius-label,
+  .shadow-label {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    font-family: monospace;
+  }
+
+  /* 语义色标签 */
+  .semantic-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-3);
+    margin-bottom: var(--spacing-3);
+  }
+  .badge {
+    padding: 4px 12px;
+    border-radius: var(--radius-full);
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid transparent;
+  }
+  .badge-success { background: var(--success-bg); color: var(--success-text); border-color: var(--success-border); }
+  .badge-warning { background: var(--warning-bg); color: var(--warning-text); border-color: var(--warning-border); }
+  .badge-error   { background: var(--error-bg);   color: var(--error-text);   border-color: var(--error-border); }
+  .badge-info    { background: var(--info-bg);    color: var(--info-text);    border-color: var(--info-border); }
+
+  /* ============================================================
+   * 阅读器演示
+   * ============================================================ */
+  .reader-demo-section {
+    margin-bottom: var(--spacing-12);
+  }
+
+  .reader-toolbar-controls {
+    display: flex;
+    gap: var(--spacing-3);
+    margin-bottom: var(--spacing-4);
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .control-group {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-md);
+    padding: 2px;
+  }
+  .control-group-label {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-right: var(--spacing-2);
+    margin-left: var(--spacing-2);
+    font-weight: 500;
+  }
+  .ctrl-btn {
+    height: 28px;
+    padding: 0 10px;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all var(--transition-fast);
+  }
+  .ctrl-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+  }
+  .ctrl-btn.active {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+  .ctrl-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .ctrl-divider {
+    width: 1px;
+    height: 20px;
+    background: var(--border-primary);
+    margin: 0 2px;
+  }
+
+  /* 阅读器容器 */
+  .reader-demo {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+  }
+
+  .reader-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--reader-border-soft, var(--border-secondary));
+    background: var(--reader-bg, var(--bg-primary));
+    transition: background-color var(--transition-normal);
+  }
+  .reader-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .reader-back {
+    font-size: 12px;
+    color: var(--reader-text-tertiary, var(--text-tertiary));
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .reader-back:hover {
+    color: var(--reader-accent, var(--text-primary));
+  }
+  .reader-title {
+    font-size: 13px;
+    color: var(--reader-text-tertiary, var(--text-tertiary));
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .reader-title strong {
+    color: var(--reader-text-secondary, var(--text-secondary));
+    font-weight: 500;
+    margin-right: 6px;
+  }
+  .reader-header-right {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .reader-tool-btn {
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: transparent;
+    color: var(--reader-text-tertiary, var(--text-tertiary));
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 12px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all var(--transition-fast);
+  }
+  .reader-tool-btn:hover {
+    background: var(--reader-bg-soft, var(--bg-hover));
+    color: var(--reader-accent, var(--text-primary));
+  }
+  .reader-tool-btn.active {
+    background: var(--reader-bg-muted, var(--bg-tertiary));
+    color: var(--reader-accent, var(--text-primary));
+  }
+
+  .reader-progress {
+    height: 2px;
+    background: var(--reader-border-soft, var(--border-secondary));
+  }
+  .reader-progress-fill {
+    height: 100%;
+    background: var(--reader-accent, var(--brand-500));
+    width: 35%;
+    transition: width 0.3s ease;
+  }
+
+  .reader-body {
+    display: flex;
+    min-height: 480px;
+    background: var(--reader-bg, var(--bg-primary));
+    transition: background-color var(--transition-normal);
+  }
+
+  .reader-sidebar {
+    width: 180px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--reader-border-soft, var(--border-secondary));
+    padding: 20px 0;
+    background: var(--reader-bg, var(--bg-primary));
+    transition: background-color var(--transition-normal);
+  }
+  .sidebar-label {
+    padding: 0 20px 10px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--reader-text-quaternary, var(--text-quaternary));
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .sidebar-nav { list-style: none; }
+  .sidebar-nav li {
+    position: relative;
+    padding: 6px 20px 6px 30px;
+    font-size: 12px;
+    color: var(--reader-text-tertiary, var(--text-tertiary));
+    cursor: pointer;
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    margin-right: 12px;
+    transition: all var(--transition-fast);
+    line-height: 1.5;
+  }
+  .sidebar-nav li::before {
+    content: "";
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 5px;
+    height: 5px;
+    background: var(--reader-text-quaternary, var(--text-quaternary));
+    border-radius: 50%;
+    opacity: 0.5;
+    transition: all var(--transition-fast);
+  }
+  .sidebar-nav li:hover {
+    color: var(--reader-text, var(--text-primary));
+    background: var(--reader-bg-soft, var(--bg-secondary));
+  }
+  .sidebar-nav li.active {
+    color: var(--reader-accent, var(--text-primary));
+    font-weight: 600;
+    background: var(--reader-bg-muted, var(--bg-tertiary));
+  }
+  .sidebar-nav li.active::before {
+    background: var(--reader-accent, var(--text-primary));
+    opacity: 1;
+    width: 7px;
+    height: 7px;
+    left: 13px;
+  }
+
+  .reader-content {
+    flex: 1;
+    padding: 32px 40px;
+    min-width: 0;
+    max-width: 680px;
+    margin: 0 auto;
+    color: var(--reader-text, var(--text-primary));
+    font-size: var(--reader-font-size, 15px);
+    line-height: var(--reader-line-height, 1.85);
+    transition: color var(--transition-normal), font-size var(--transition-normal);
+  }
+
+  .reader-content h1.article-title {
+    font-size: 1.7em;
+    font-weight: 700;
+    line-height: 1.4;
+    margin-bottom: 10px;
+    color: var(--reader-text, var(--text-primary));
+    letter-spacing: -0.3px;
+  }
+  .reader-meta {
+    font-size: 0.85em;
+    color: var(--reader-text-tertiary, var(--text-tertiary));
+    padding-bottom: 18px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid var(--reader-border-soft, var(--border-secondary));
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .reader-meta .meta-divider {
+    width: 1px;
+    height: 14px;
+    background: var(--reader-border, var(--border-primary));
+    align-self: center;
+  }
+
+  .reader-content h2 {
+    font-size: 1.3em;
+    font-weight: 700;
+    margin: 2em 0 1em;
+    padding-left: 12px;
+    border-left: 3px solid var(--reader-accent, var(--brand-500));
+    line-height: 1.4;
+    color: var(--reader-text, var(--text-primary));
+  }
+
+  .reader-content p {
+    margin: 0.9em 0;
+    text-align: justify;
+    color: var(--reader-text, var(--text-primary));
+  }
+
+  .reader-content strong {
+    font-weight: 600;
+  }
+
+  /* 公式块 — 左边条风格 */
+  .formula-block {
+    margin: 1.2em 0;
+    padding: 14px 20px;
+    background: var(--reader-bg-muted, var(--bg-tertiary));
+    border-left: 2px solid var(--reader-accent, var(--brand-500));
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    text-align: center;
+    font-family: Georgia, "Times New Roman", serif;
+    font-style: italic;
+    font-size: 0.95em;
+    color: var(--reader-text, var(--text-primary));
+  }
+
+  /* 折叠区 */
+  .demo-details {
+    margin: 1.2em 0;
+    border-radius: var(--radius-md);
+    background: var(--reader-bg-soft, var(--bg-secondary));
+    border: 1px solid var(--reader-border-soft, var(--border-secondary));
+    overflow: hidden;
+  }
+  .demo-details summary {
+    cursor: pointer;
+    font-weight: 600;
+    padding: 12px 16px;
+    font-size: 0.92em;
+    color: var(--reader-text-secondary, var(--text-secondary));
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    user-select: none;
+    transition: background-color var(--transition-fast);
+  }
+  .demo-details summary:hover {
+    background: var(--reader-bg-muted, var(--bg-tertiary));
+  }
+  .demo-details summary::-webkit-details-marker { display: none; }
+  .demo-details summary::before {
+    content: "i";
+    flex-shrink: 0;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--reader-bg-muted, var(--bg-tertiary));
+    color: var(--reader-text-tertiary, var(--text-tertiary));
+    font-size: 11px;
+    font-weight: 700;
+    font-style: italic;
+    display: flex; align-items: center; justify-content: center;
+    font-family: Georgia, serif;
+  }
+  .demo-details summary::after {
+    content: "▾";
+    margin-left: auto;
+    font-size: 10px;
+    color: var(--reader-text-quaternary, var(--text-quaternary));
+    transition: transform var(--transition-slow);
+  }
+  .demo-details[open] summary::after {
+    transform: rotate(180deg);
+  }
+  .detail-inner {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.3s ease;
+  }
+  .demo-details[open] .detail-inner {
+    grid-template-rows: 1fr;
+  }
+  .detail-inner > div {
+    overflow: hidden;
+  }
+  .detail-content {
+    padding: 0 16px 14px;
+    padding-left: 44px;
+    font-size: 0.92em;
+    color: var(--reader-text-tertiary, var(--text-tertiary));
+    line-height: 1.75;
+  }
+
+  /* 图片占位 */
+  .figure-demo {
+    margin: 1.2em 0;
+    text-align: center;
+  }
+  .figure-img {
+    display: inline-block;
+    width: 100%;
+    max-width: 380px;
+    height: 130px;
+    background: linear-gradient(135deg, var(--reader-bg-soft, var(--bg-secondary)) 0%, var(--reader-bg-muted, var(--bg-tertiary)) 100%);
+    border: 1px solid var(--reader-border-soft, var(--border-secondary));
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--reader-text-quaternary, var(--text-quaternary));
+    font-size: 12px;
+    cursor: zoom-in;
+    margin: 0 auto;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  }
+  .figure-img:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
+  .figure-cap {
+    font-size: 0.75em;
+    color: var(--reader-text-tertiary, var(--text-tertiary));
+    margin-top: 8px;
+    font-style: italic;
+  }
+
+  /* 返回顶部按钮 */
+  .back-to-top-demo {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--bg-primary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-primary);
+    box-shadow: var(--shadow-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+  }
+  .back-to-top-demo:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    color: var(--text-primary);
+  }
+
+  .reader-body {
+    position: relative;
+  }
+
+  /* 灯箱 */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.88);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: zoom-out;
+  }
+  .lightbox.show {
+    display: flex;
+    animation: fadeIn 0.15s ease;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .lightbox-img {
+    max-width: 85vw;
+    max-height: 85vh;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-xl);
+    background: var(--bg-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-tertiary);
+    font-size: 14px;
+    min-width: 300px;
+    min-height: 200px;
+  }
+  .lightbox-close {
+    position: absolute;
+    top: 24px; right: 28px;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s;
+  }
+  .lightbox-close:hover { background: rgba(255,255,255,0.25); }
+
+  /* ============================================================
+   * 按钮样式展示
+   * ============================================================ */
+  .button-showcase {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-4);
+    align-items: center;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 18px;
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all var(--transition-fast);
+  }
+  .btn-primary {
+    background: var(--brand-500);
+    color: var(--text-inverse);
+    border-color: var(--brand-500);
+  }
+  .btn-primary:hover {
+    background: var(--brand-600);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
+  .btn-secondary {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    border-color: var(--border-primary);
+  }
+  .btn-secondary:hover {
+    background: var(--bg-hover);
+    border-color: var(--border-strong);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    border-color: transparent;
+  }
+  .btn-ghost:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+  }
+  .btn-success {
+    background: var(--success-bg);
+    color: var(--success-text);
+    border-color: var(--success-border);
+  }
+  .btn-error {
+    background: var(--error-bg);
+    color: var(--error-text);
+    border-color: var(--error-border);
+  }
+
+  /* ============================================================
+   * 页脚
+   * ============================================================ */
+  .footer {
+    text-align: center;
+    padding: var(--spacing-8) var(--spacing-6);
+    color: var(--text-quaternary);
+    font-size: 12px;
+    border-top: 1px solid var(--border-primary);
+    margin-top: var(--spacing-12);
+  }
+</style>
+</head>
+<body>
+
+<!-- 顶部导航 -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-brand">
+      <div class="topbar-brand-icon">✨</div>
+      <span>UI 设计系统</span>
+    </div>
+    <nav class="topbar-nav">
+      <a href="#tokens" class="active">设计 Token</a>
+      <a href="#reader">阅读器演示</a>
+      <a href="#components">组件样式</a>
+    </nav>
+    <div class="topbar-right">
+      <button class="theme-toggle" id="globalThemeBtn" title="切换全局主题">☾</button>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+
+  <!-- 设计系统 Token -->
+  <section id="tokens" class="section-heading">
+    <h2>设计系统 · Design Tokens</h2>
+    <p>统一的配色、字体、间距、圆角、阴影规范 —— 所有页面组件消费同一套 token</p>
+  </section>
+
+  <div class="design-tokens">
+
+    <!-- 中性色 -->
+    <div class="card token-card">
+      <h3>中性色 Neutral</h3>
+      <div class="color-grid">
+        <div class="color-swatch">
+          <div class="color-block" style="background:#ffffff; border-bottom:1px solid #f1f5f9;"></div>
+          <div class="color-label">primary</div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-block" style="background:#f9fafb;"></div>
+          <div class="color-label">secondary</div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-block" style="background:#f3f4f6;"></div>
+          <div class="color-label">tertiary</div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-block" style="background:#e5e7eb;"></div>
+          <div class="color-label">border</div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-block" style="background:#6b7280;"></div>
+          <div class="color-label">tertiary</div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-block" style="background:#374151;"></div>
+          <div class="color-label">secondary</div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-block" style="background:#111827;"></div>
+          <div class="color-label">primary</div>
+        </div>
+        <div class="color-swatch">
+          <div class="color-block" style="background:#020617;"></div>
+          <div class="color-label">brand-700</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 语义色 -->
+    <div class="card token-card">
+      <h3>语义色 Semantic</h3>
+      <div class="semantic-row">
+        <span class="badge badge-success">● 成功 Success</span>
+        <span class="badge badge-warning">● 警告 Warning</span>
+      </div>
+      <div class="semantic-row">
+        <span class="badge badge-error">● 错误 Error</span>
+        <span class="badge badge-info">● 信息 Info</span>
+      </div>
+      <p style="font-size:12px; color:var(--text-tertiary); margin-top:12px; line-height:1.7;">
+        语义色仅用于<strong>状态标签</strong>、<strong>按钮</strong>等小面积元素，
+        主界面以黑白灰为主，保持简约克制。
+      </p>
+    </div>
+
+    <!-- 字体层级 -->
+    <div class="card token-card">
+      <h3>字体层级 Typography</h3>
+      <div class="type-scale">
+        <div class="type-item">
+          <div class="type-sample" style="font-size:30px; font-weight:700; line-height:1.3;">标题 H1</div>
+          <div class="type-label">30px / 700</div>
+        </div>
+        <div class="type-item">
+          <div class="type-sample" style="font-size:24px; font-weight:700; line-height:1.35;">标题 H2</div>
+          <div class="type-label">24px / 700</div>
+        </div>
+        <div class="type-item">
+          <div class="type-sample" style="font-size:18px; font-weight:600;">标题 H3</div>
+          <div class="type-label">18px / 600</div>
+        </div>
+        <div class="type-item">
+          <div class="type-sample" style="font-size:16px; font-weight:500;">正文 Large</div>
+          <div class="type-label">16px / 500</div>
+        </div>
+        <div class="type-item">
+          <div class="type-sample" style="font-size:14px;">正文 Base</div>
+          <div class="type-label">14px / 400</div>
+        </div>
+        <div class="type-item">
+          <div class="type-sample" style="font-size:13px; color:var(--text-tertiary);">辅助文字</div>
+          <div class="type-label">13px / 400</div>
+        </div>
+        <div class="type-item">
+          <div class="type-sample" style="font-size:12px; color:var(--text-quaternary);">说明 / 标签</div>
+          <div class="type-label">12px / 400</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 间距 -->
+    <div class="card token-card">
+      <h3>间距系统 Spacing</h3>
+      <div style="margin-top:8px;">
+        <div class="spacing-row">
+          <div class="spacing-bar" style="width:4px;"></div>
+          <span class="spacing-label">4px</span>
+        </div>
+        <div class="spacing-row">
+          <div class="spacing-bar" style="width:8px;"></div>
+          <span class="spacing-label">8px</span>
+        </div>
+        <div class="spacing-row">
+          <div class="spacing-bar" style="width:16px;"></div>
+          <span class="spacing-label">16px</span>
+        </div>
+        <div class="spacing-row">
+          <div class="spacing-bar" style="width:24px;"></div>
+          <span class="spacing-label">24px</span>
+        </div>
+        <div class="spacing-row">
+          <div class="spacing-bar" style="width:32px;"></div>
+          <span class="spacing-label">32px</span>
+        </div>
+        <div class="spacing-row">
+          <div class="spacing-bar" style="width:48px;"></div>
+          <span class="spacing-label">48px</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 圆角 -->
+    <div class="card token-card">
+      <h3>圆角 Radius</h3>
+      <div class="radius-grid" style="margin-top:12px;">
+        <div class="radius-item">
+          <div class="radius-box" style="border-radius:4px;">4px</div>
+          <span class="radius-label">sm</span>
+        </div>
+        <div class="radius-item">
+          <div class="radius-box" style="border-radius:6px;">6px</div>
+          <span class="radius-label">md</span>
+        </div>
+        <div class="radius-item">
+          <div class="radius-box" style="border-radius:8px;">8px</div>
+          <span class="radius-label">lg</span>
+        </div>
+        <div class="radius-item">
+          <div class="radius-box" style="border-radius:12px;">12px</div>
+          <span class="radius-label">xl</span>
+        </div>
+        <div class="radius-item">
+          <div class="radius-box" style="border-radius:9999px;">50%</div>
+          <span class="radius-label">full</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 阴影 -->
+    <div class="card token-card">
+      <h3>阴影 Shadow</h3>
+      <div class="shadow-grid" style="margin-top:12px;">
+        <div class="shadow-item">
+          <div class="shadow-box" style="box-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);">sm</div>
+          <span class="shadow-label">sm · 细腻</span>
+        </div>
+        <div class="shadow-item">
+          <div class="shadow-box" style="box-shadow:0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);">md</div>
+          <span class="shadow-label">md · 卡片</span>
+        </div>
+        <div class="shadow-item">
+          <div class="shadow-box" style="box-shadow:0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.05);">lg</div>
+          <span class="shadow-label">lg · 悬浮</span>
+        </div>
+        <div class="shadow-item">
+          <div class="shadow-box" style="box-shadow:0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.07);">xl</div>
+          <span class="shadow-label">xl · 模态</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 阅读器演示 -->
+  <section id="reader" class="section-heading">
+    <h2>阅读器演示 · Reader Demo</h2>
+    <p>三主题切换 · 字号调节 · 折叠区动画 · 图片灯箱 · 小圆点导航 · 阅读进度条</p>
+  </section>
+
+  <div class="reader-demo-section">
+
+    <!-- 控制面板 -->
+    <div class="reader-toolbar-controls">
+      <div class="control-group">
+        <span class="control-group-label">阅读主题</span>
+        <button class="ctrl-btn active" data-theme-btn="light" onclick="setReaderTheme('light')">☼ 浅色</button>
+        <button class="ctrl-btn" data-theme-btn="eye-care" onclick="setReaderTheme('eye-care')">◎ 护眼</button>
+        <button class="ctrl-btn" data-theme-btn="dark" onclick="setReaderTheme('dark')">☾ 暗色</button>
+      </div>
+
+      <div class="control-group">
+        <span class="control-group-label">字号</span>
+        <button class="ctrl-btn" onclick="changeFontSize(-1)" id="fontMinus">A-</button>
+        <button class="ctrl-btn" style="min-width:50px; font-weight:600;" id="fontValue">15px</button>
+        <button class="ctrl-btn" onclick="changeFontSize(1)" id="fontPlus">A+</button>
+      </div>
+
+      <div class="control-group">
+        <span class="control-group-label">行高</span>
+        <button class="ctrl-btn" onclick="setLineHeight(1.6)" id="lh1">1.6</button>
+        <button class="ctrl-btn active" onclick="setLineHeight(1.8)" id="lh2">1.8</button>
+        <button class="ctrl-btn" onclick="setLineHeight(2.0)" id="lh3">2.0</button>
+      </div>
+
+      <div class="control-group">
+        <span class="control-group-label">进度</span>
+        <input type="range" min="0" max="100" value="35" style="width:100px; cursor:pointer;" oninput="setProgress(this.value)" />
+      </div>
+    </div>
+
+    <!-- 阅读器本体 -->
+    <div class="reader-demo" id="readerDemo" data-reader-theme="light">
+      <!-- 顶部栏 -->
+      <div class="reader-header">
+        <div class="reader-header-left">
+          <button class="reader-back">
+            <span>←</span> 返回任务详情
+          </button>
+          <span class="reader-title">
+            <strong>Attention Is All You Need</strong>
+            · 论文转写
+          </span>
+        </div>
+        <div class="reader-header-right">
+          <button class="reader-tool-btn" title="减小字号">A-</button>
+          <button class="reader-tool-btn" title="增大字号">A+</button>
+          <div class="ctrl-divider" style="margin:0 2px;"></div>
+          <button class="reader-tool-btn" title="浅色主题">☼</button>
+          <button class="reader-tool-btn" title="护眼主题">◎</button>
+          <button class="reader-tool-btn" title="暗色主题">☾</button>
+          <div class="ctrl-divider" style="margin:0 2px;"></div>
+          <button class="reader-tool-btn" title="下载">⬇</button>
+        </div>
+      </div>
+
+      <!-- 进度条 -->
+      <div class="reader-progress">
+        <div class="reader-progress-fill" id="progressFill"></div>
+      </div>
+
+      <!-- 主体 -->
+      <div class="reader-body">
+        <!-- 侧边栏 -->
+        <nav class="reader-sidebar">
+          <div class="sidebar-label">目录</div>
+          <ul class="sidebar-nav">
+            <li class="active" onclick="setActiveNav(this)">核心观点</li>
+            <li onclick="setActiveNav(this)">研究背景</li>
+            <li onclick="setActiveNav(this)">方法架构</li>
+            <li onclick="setActiveNav(this)">实验设计</li>
+            <li onclick="setActiveNav(this)">结果分析</li>
+            <li onclick="setActiveNav(this)">相关工作</li>
+            <li onclick="setActiveNav(this)">结论与展望</li>
+          </ul>
+        </nav>
+
+        <!-- 正文 -->
+        <div class="reader-content" id="readerContent">
+          <h1 class="article-title">核心观点</h1>
+          <div class="reader-meta">
+            <span>7 章</span>
+            <span class="meta-divider"></span>
+            <span>约 8,500 字</span>
+            <span class="meta-divider"></span>
+            <span>预计阅读 25 分钟</span>
+          </div>
+
+          <p>
+            本文提出了一种全新的网络架构——<strong>Transformer</strong>，
+            它完全基于自注意力机制，彻底摒弃了循环神经网络和卷积层的传统序列建模方式。
+            这一架构不仅在并行计算能力上远超 RNN，还能更有效地捕捉长距离依赖关系。
+          </p>
+          <p>
+            在机器翻译任务上，Transformer 在 WMT 2014 英德和英法翻译任务上均取得了当时最优的结果，
+            同时训练所需的计算资源大幅减少。
+          </p>
+
+          <div class="formula-block">
+            Attention(Q, K, V) = softmax(QK<sup>T</sup> / √d<sub>k</sub>)V
+          </div>
+
+          <h2>关键贡献</h2>
+          <p>
+            论文的核心贡献在于证明了纯注意力机制足以胜任序列到序列的建模任务，
+            且并行计算能力远强于 RNN。这一发现为后续 BERT、GPT 等预训练语言模型奠定了基础。
+          </p>
+
+          <!-- 图片 -->
+          <div class="figure-demo">
+            <div class="figure-img" onclick="openLightbox(this)">
+              Transformer 架构示意图
+            </div>
+            <div class="figure-cap">图 1：Transformer 整体架构，包含编码器与解码器堆叠</div>
+          </div>
+
+          <!-- 折叠区 -->
+          <details class="demo-details" open>
+            <summary>展开：多头注意力的设计动机</summary>
+            <div class="detail-inner">
+              <div>
+                <div class="detail-content">
+                  多头注意力允许模型在不同位置共同关注来自不同表示子空间的信息。
+                  单头注意力会被平均效应所限制，而通过 8 个并行的注意力头，
+                  模型可以同时捕捉语法、语义、指代关系等多层次的依赖关系。
+                  在实际应用中，多头注意力的并行计算特性使得训练效率大幅提升。
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <p style="margin-top:1.5em;">
+            此外，论文还提出了位置编码的正弦余弦表示方法，使模型能够在不使用递归的情况下感知序列顺序，
+            这一设计后来被广泛沿用，成为 Transformer 架构的标准组件之一。
+          </p>
+
+          <!-- 第二个折叠区 -->
+          <details class="demo-details">
+            <summary>展开：位置编码的数学原理</summary>
+            <div class="detail-inner">
+              <div>
+                <div class="detail-content">
+                  位置编码使用正弦和余弦函数的组合，每个维度对应不同频率的正弦波。
+                  这种设计使得模型可以通过相对位置的线性组合来学习位置关系，
+                  而不需要为每个位置单独学习嵌入向量。对于任意固定的偏移量 k，
+                  PE(pos+k) 都可以表示为 PE(pos) 的线性函数。
+                </div>
+              </div>
+            </div>
+          </details>
+
+        </div>
+
+        <!-- 返回顶部按钮（演示用） -->
+        <button class="back-to-top-demo" title="返回顶部" onclick="this.style.transform='translateY(-4px)'; setTimeout(()=>this.style.transform='',200);">
+          ↑
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 组件样式展示 -->
+  <section id="components" class="section-heading">
+    <h2>组件样式 · Components</h2>
+    <p>按钮、标签、卡片等基础组件的视觉规范</p>
+  </section>
+
+  <div class="design-tokens">
+
+    <div class="card token-card">
+      <h3>按钮 Buttons</h3>
+      <div class="button-showcase" style="margin-top:12px;">
+        <button class="btn btn-primary">主要按钮</button>
+        <button class="btn btn-secondary">次要按钮</button>
+        <button class="btn btn-ghost">幽灵按钮</button>
+      </div>
+      <div class="button-showcase" style="margin-top:16px;">
+        <button class="btn btn-success">成功</button>
+        <button class="btn btn-error">危险</button>
+      </div>
+      <p style="font-size:12px; color:var(--text-tertiary); margin-top:16px; line-height:1.7;">
+        hover 效果：<strong>轻微上浮 + 阴影加深</strong>，150ms 过渡，跟手不拖沓。
+      </p>
+    </div>
+
+    <div class="card token-card">
+      <h3>状态标签 Badges</h3>
+      <div style="margin-top:8px;">
+        <div class="semantic-row" style="margin-bottom:16px;">
+          <span class="badge badge-success">● 已完成</span>
+          <span class="badge badge-info">● 运行中</span>
+        </div>
+        <div class="semantic-row" style="margin-bottom:16px;">
+          <span class="badge badge-warning">● 排队中</span>
+          <span class="badge badge-error">● 失败</span>
+        </div>
+        <div class="semantic-row">
+          <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:9999px;
+            font-size:12px;font-weight:500;background:var(--bg-tertiary);color:var(--text-tertiary);border:1px solid var(--border-primary);">
+            ○ 已取消
+          </span>
+          <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:9999px;
+            font-size:12px;font-weight:500;background:var(--bg-secondary);color:var(--text-quaternary);border:1px dashed var(--border-primary);">
+            ⏳ 等待中
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card token-card">
+      <h3>卡片 Cards</h3>
+      <div style="margin-top:12px; display:flex; flex-direction:column; gap:16px;">
+        <div style="border:1px solid var(--border-primary); border-radius:var(--radius-xl); padding:20px; background:var(--bg-primary); box-shadow:var(--shadow-sm); transition:all 0.15s;"
+             onmouseover="this.style.boxShadow='0 10px 15px -3px rgb(0 0 0 / 0.08)'; this.style.transform='translateY(-2px)';"
+             onmouseout="this.style.boxShadow='var(--shadow-sm)'; this.style.transform='translateY(0)';">
+          <div style="font-weight:600; margin-bottom:6px;">任务卡片示例</div>
+          <div style="font-size:12px; color:var(--text-tertiary);">hover 时上浮 + 阴影加深</div>
+        </div>
+        <div style="border:1px solid var(--border-primary); border-radius:var(--radius-lg); padding:16px; background:var(--bg-secondary);">
+          <div style="font-size:13px; font-weight:500; margin-bottom:4px;">次级卡片</div>
+          <div style="font-size:12px; color:var(--text-tertiary);">用于辅助信息展示</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<!-- 灯箱 -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="event.stopPropagation(); closeLightbox();">✕</button>
+  <div class="lightbox-img" onclick="event.stopPropagation()">Transformer 架构示意图（放大预览）</div>
+</div>
+
+<footer class="footer">
+  易读论文 · UI 设计系统展示 · Spec 004
+</footer>
+
+<script>
+  // ===== 全局主题切换 =====
+  const globalThemeBtn = document.getElementById('globalThemeBtn');
+  let globalTheme = document.documentElement.getAttribute('data-theme') || 'light';
+
+  function updateGlobalThemeIcon() {
+    globalThemeBtn.textContent = globalTheme === 'dark' ? '☼' : '☾';
+    globalThemeBtn.title = globalTheme === 'dark' ? '切换到亮色主题' : '切换到暗色主题';
+  }
+
+  globalThemeBtn.addEventListener('click', () => {
+    globalTheme = globalTheme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', globalTheme);
+    updateGlobalThemeIcon();
+    // 同步阅读器主题（默认跟随全局，护眼模式除外）
+    const readerDemo = document.getElementById('readerDemo');
+    const currentReaderTheme = readerDemo.getAttribute('data-reader-theme');
+    if (currentReaderTheme !== 'eye-care') {
+      setReaderTheme(globalTheme);
+    }
+  });
+
+  updateGlobalThemeIcon();
+
+  // ===== 阅读器主题切换 =====
+  const fontSizeLevels = [13, 14, 15, 16, 18];
+  let fontSizeIndex = 2;
+  let lineHeightValue = 1.8;
+
+  function setReaderTheme(theme) {
+    const readerDemo = document.getElementById('readerDemo');
+    readerDemo.setAttribute('data-reader-theme', theme);
+
+    // CSS 变量
+    const colors = {
+      light: {
+        bg: '#ffffff',
+        text: '#111827',
+        'text-secondary': '#374151',
+        'text-tertiary': '#6b7280',
+        'text-quaternary': '#9ca3af',
+        border: '#e5e7eb',
+        'border-soft': '#f1f5f9',
+        'bg-soft': '#f9fafb',
+        'bg-muted': '#f3f4f6',
+        accent: '#111827',
+      },
+      'eye-care': {
+        bg: '#faf6ee',
+        text: '#5c4a3a',
+        'text-secondary': '#7a6652',
+        'text-tertiary': '#9a8570',
+        'text-quaternary': '#b8a894',
+        border: '#e5dcc8',
+        'border-soft': '#f0e8d8',
+        'bg-soft': '#faf4e8',
+        'bg-muted': '#f3ead6',
+        accent: '#5c4a3a',
+      },
+      dark: {
+        bg: '#1a1a2e',
+        text: '#e2e8f0',
+        'text-secondary': '#cbd5e1',
+        'text-tertiary': '#94a3b8',
+        'text-quaternary': '#64748b',
+        border: '#2d3748',
+        'border-soft': '#1e293b',
+        'bg-soft': '#1e293b',
+        'bg-muted': '#2d3748',
+        accent: '#e2e8f0',
+      },
+    };
+
+    const c = colors[theme];
+    readerDemo.style.setProperty('--reader-bg', c.bg);
+    readerDemo.style.setProperty('--reader-text', c.text);
+    readerDemo.style.setProperty('--reader-text-secondary', c['text-secondary']);
+    readerDemo.style.setProperty('--reader-text-tertiary', c['text-tertiary']);
+    readerDemo.style.setProperty('--reader-text-quaternary', c['text-quaternary']);
+    readerDemo.style.setProperty('--reader-border', c.border);
+    readerDemo.style.setProperty('--reader-border-soft', c['border-soft']);
+    readerDemo.style.setProperty('--reader-bg-soft', c['bg-soft']);
+    readerDemo.style.setProperty('--reader-bg-muted', c['bg-muted']);
+    readerDemo.style.setProperty('--reader-accent', c.accent);
+
+    // 更新按钮状态
+    document.querySelectorAll('[data-theme-btn]').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-theme-btn') === theme);
+    });
+  }
+
+  // ===== 字号调节 =====
+  function changeFontSize(delta) {
+    const newIndex = fontSizeIndex + delta;
+    if (newIndex < 0 || newIndex >= fontSizeLevels.length) return;
+    fontSizeIndex = newIndex;
+    const size = fontSizeLevels[fontSizeIndex];
+    const content = document.getElementById('readerContent');
+    content.style.fontSize = size + 'px';
+    document.getElementById('fontValue').textContent = size + 'px';
+    document.getElementById('fontMinus').disabled = fontSizeIndex === 0;
+    document.getElementById('fontPlus').disabled = fontSizeIndex === fontSizeLevels.length - 1;
+    document.getElementById('fontMinus').style.opacity = fontSizeIndex === 0 ? '0.4' : '1';
+    document.getElementById('fontPlus').style.opacity = fontSizeIndex === fontSizeLevels.length - 1 ? '0.4' : '1';
+  }
+
+  // ===== 行高调节 =====
+  function setLineHeight(value) {
+    lineHeightValue = value;
+    const content = document.getElementById('readerContent');
+    content.style.lineHeight = value;
+    document.getElementById('lh1').classList.toggle('active', value === 1.6);
+    document.getElementById('lh2').classList.toggle('active', value === 1.8);
+    document.getElementById('lh3').classList.toggle('active', value === 2.0);
+  }
+
+  // ===== 阅读进度 =====
+  function setProgress(value) {
+    document.getElementById('progressFill').style.width = value + '%';
+  }
+
+  // ===== 导航激活态 =====
+  function setActiveNav(li) {
+    document.querySelectorAll('.sidebar-nav li').forEach(el => el.classList.remove('active'));
+    li.classList.add('active');
+  }
+
+  // ===== 图片灯箱 =====
+  function openLightbox(img) {
+    document.getElementById('lightbox').classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('show');
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeLightbox();
+  });
+
+  // ===== 导航高亮 =====
+  document.querySelectorAll('.topbar-nav a').forEach(a => {
+    a.addEventListener('click', (e) => {
+      document.querySelectorAll('.topbar-nav a').forEach(x => x.classList.remove('active'));
+      a.classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>

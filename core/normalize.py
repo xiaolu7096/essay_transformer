@@ -162,7 +162,11 @@ def normalize_content_list(
             if isinstance(text, str) and text.strip():
                 block["text"] = text
             else:
-                block = _build_gap(idx, raw_type, page_idx, "text", "段落 text 为空")
+                suspected = "figure" if _looks_like_figure_bbox(raw.get("bbox")) else None
+                block = _build_gap(
+                    idx, raw_type, page_idx, "text", "段落 text 为空",
+                    suspected=suspected,
+                )
             blocks.append(block)
 
         elif raw_type == "equation":
@@ -294,6 +298,8 @@ def _build_gap(
     page_idx: int | None,
     gap_kind: str,
     reason: str,
+    *,
+    suspected: str | None = None,
 ) -> dict[str, Any]:
     """单条原始内容构建失败时的降级占位块。"""
     label = _GAP_KIND_LABEL.get(gap_kind, "段落")
@@ -302,7 +308,25 @@ def _build_gap(
     block["placeholder"] = f"原文{label}解析缺失，未编造内容补全。"
     block["text"] = block["placeholder"]
     block["reason"] = reason
+    if suspected:
+        block["suspected"] = suspected
     return block
+
+
+# MinerU 常规双栏版面：单栏宽约 375px，整页高约 1000px（按 survey 实测取保守阈值）
+def _looks_like_figure_bbox(bbox: Any) -> bool:
+    """保守判定空 text 条目的 bbox 是否疑似整图位：面积接近栏内大图才成立。"""
+    if not (isinstance(bbox, (list, tuple)) and len(bbox) == 4):
+        return False
+    try:
+        x0, y0, x1, y1 = (float(v) for v in bbox)
+    except (TypeError, ValueError):
+        return False
+    width, height = x1 - x0, y1 - y0
+    if width <= 0 or height <= 0:
+        return False
+    # 宽占单栏 90% 以上、高 ≥170px（约整页 1/6），判为疑似图位
+    return width >= 0.9 * 375 and height >= 170
 
 
 def _build_section_from_heading(
@@ -321,7 +345,7 @@ def _build_section_from_heading(
         "id": section_id,
         "heading": heading_text,
         "level": section_level,
-        "kind": _classify_kind(heading_text),
+        "kind": _classify_kind(heading_text, text_level=block.get("text_level")),
         "page_start": block.get("page_idx"),
         "blocks": [],
     }
@@ -376,8 +400,12 @@ def _join_lines(value: Any) -> str:
     return str(value).strip()
 
 
-def _classify_kind(heading_text: str) -> str:
-    """按标题关键词做初始 kind 判定；判不准写 unclassified。"""
+def _classify_kind(heading_text: str, *, text_level: int | None = None) -> str:
+    """按标题关键词做初始 kind 判定；判不准写 unclassified。
+
+    text_level<=1 的是文档总标题而非章节标题，survey/overview 等词在此语境
+    不得判成 related_work（T004）。
+    """
     h = heading_text.lower()
     if "appendix" in h or "supplementary" in h:
         return "appendix"
@@ -385,9 +413,21 @@ def _classify_kind(heading_text: str) -> str:
         return "abstract"
     if "introduction" in h:
         return "introduction"
+    is_section_heading = text_level is None or text_level > 1
     if "related work" in h or h == "background" or h.startswith("background"):
         return "related_work"
-    if "conclusion" in h or "discussion" in h:
+    if is_section_heading and (
+        "survey of" in h
+        or "survey on" in h
+        or "overview of" in h
+        or h.startswith("overview")
+    ):
+        return "related_work"
+    if (
+        "conclusion" in h
+        or "discussion" in h
+        or (is_section_heading and ("limitation" in h or "future work" in h))
+    ):
         return "conclusion"
     if "experiment" in h or "results" in h or "evaluation" in h:
         return "experiments"

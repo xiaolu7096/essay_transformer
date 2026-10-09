@@ -1,0 +1,28 @@
+# 纸慧 PaperWise 生产部署（单容器：FastAPI 单端口托管前端 + API）
+# 日常维护：
+#   启动/更新：docker compose up -d --build
+#   查看日志：docker compose logs -f
+# 接入现有 paper_wise_v1.5 的 Caddy 网络，不占用宿主机端口。
+services:
+  web:
+    container_name: essay-transformer
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      WEB_DATABASE_URL: sqlite:////app/data/app.db
+      WEB_RUNS_DIR: /app/runs
+    volumes:
+      - ./data:/app/data
+      - ./runs:/app/runs
+    networks:
+      - paperwise_edge
+
+networks:
+  paperwise_edge:
+    # 由现有 paper_wise_v1.5 的 compose 项目创建（默认网络名）
+    external: true
+    name: paper_wise_v15_default

@@ -1,0 +1,292 @@
+/* ============================================================
+ * Design Tokens — 全局设计系统
+ * 双配色体系：
+ *   - 全局 token（柔墨配色）：非阅读页使用，灰调高级感
+ *   - 阅读器 token（墨林墨绿配色）：仅阅读器内部使用，暖调护眼
+ * 所有页面组件必须消费这些 token，不得硬编码颜色/间距/字号
+ * ============================================================ */
+
+/* ============================================================
+ * 全局 Token — 柔墨配色（非阅读页使用）
+ * ============================================================ */
+:root,
+:root[data-theme="light"] {
+  /* ---------- 背景 ---------- */
+  --bg-primary: #fafafa;
+  --bg-secondary: #f5f5f5;
+  --bg-tertiary: #e8e8e8;
+  --bg-hover: #f0f0f0;
+  --bg-active: #e8e8e8;
+  --bg-elevated: #ffffff;
+  --bg-overlay: rgba(0, 0, 0, 0.5);
+
+  /* ---------- 文字 ---------- */
+  --text-primary: #27272a;
+  --text-secondary: #52525b;
+  --text-tertiary: #71717a;
+  --text-quaternary: #a1a1aa;
+  --text-inverse: #fafafa;
+  --text-disabled: #d4d4d8;
+
+  /* ---------- 边框 / 分割线 ---------- */
+  --border-primary: #e4e4e7;
+  --border-secondary: #f0f0f0;
+  --border-strong: #d4d4d8;
+  --border-focus: #52525b;
+
+  /* ---------- 品牌色（柔墨 — 克制使用，纯灰调品牌色）---------- */
+  --brand-50: #f4f4f5;
+  --brand-100: #e4e4e7;
+  --brand-200: #d4d4d8;
+  --brand-500: #52525b;
+  --brand-600: #3f3f46;
+  --brand-700: #27272a;
+
+  /* ---------- 语义色（低饱和，小面积使用）---------- */
+  --success-bg: #f0fdf4;
+  --success-text: #15803d;
+  --success-border: #bbf7d0;
+  --success-color: #15803d;
+  --warning-bg: #fffbeb;
+  --warning-text: #b45309;
+  --warning-border: #fde68a;
+  --warning-color: #b45309;
+  --error-bg: #fef2f2;
+  --error-text: #b91c1c;
+  --error-border: #fecaca;
+  --error-color: #dc2626;
+  --info-bg: #eff6ff;
+  --info-text: #1d4ed8;
+  --info-border: #bfdbfe;
+  --info-color: #2563eb;
+
+  /* ---------- 组件语义别名（供各页面复用）---------- */
+  --bg-card: #ffffff;
+  --bg-input: #ffffff;
+  --text-placeholder: #a1a1aa;
+  --accent-color: #27272a;
+
+  /* ---------- 字体 ---------- */
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  --font-serif: Georgia, "Songti SC", SimSun, "Noto Serif CJK SC", serif;
+  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo,
+    "Cascadia Code", monospace;
+
+  --font-size-xs: 12px;
+  --font-size-sm: 13px;
+  --font-size-base: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 24px;
+  --font-size-3xl: 32px;
+  --font-size-4xl: 42px;
+  --font-size-5xl: 56px;
+
+  --line-height-tight: 1.4;
+  --line-height-normal: 1.6;
+  --line-height-relaxed: 1.8;
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* ---------- 间距 ---------- */
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px;
+  --spacing-5: 20px;
+  --spacing-6: 24px;
+  --spacing-8: 32px;
+  --spacing-10: 40px;
+  --spacing-12: 48px;
+  --spacing-16: 64px;
+  --spacing-20: 80px;
+
+  /* ---------- 圆角 ---------- */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+
+  /* ---------- 阴影（克制柔和）---------- */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+  --shadow-md: 0 4px 12px 0 rgb(0 0 0 / 0.06);
+  --shadow-lg: 0 12px 32px 0 rgb(0 0 0 / 0.08);
+  --shadow-xl: 0 24px 48px 0 rgb(0 0 0 / 0.10);
+
+  /* ---------- 过渡 ---------- */
+  --transition-fast: 120ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ---------- z-index ---------- */
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-drawer: 1025;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+}
+
+/* ============================================================
+ * 暗色主题覆盖 — 柔墨暗色
+ * ============================================================ */
+:root[data-theme="dark"] {
+  /* ---------- 背景 ---------- */
+  --bg-primary: #18181b;
+  --bg-secondary: #27272a;
+  --bg-tertiary: #3f3f46;
+  --bg-hover: #27272a;
+  --bg-active: #3f3f46;
+  --bg-elevated: #27272a;
+  --bg-overlay: rgba(0, 0, 0, 0.7);
+
+  /* ---------- 文字 ---------- */
+  --text-primary: #e4e4e7;
+  --text-secondary: #a1a1aa;
+  --text-tertiary: #71717a;
+  --text-quaternary: #52525b;
+  --text-inverse: #18181b;
+  --text-disabled: #3f3f46;
+
+  /* ---------- 边框 ---------- */
+  --border-primary: #3f3f46;
+  --border-secondary: #27272a;
+  --border-strong: #52525b;
+  --border-focus: #a1a1aa;
+
+  /* ---------- 品牌色 ---------- */
+  --brand-50: #27272a;
+  --brand-100: #3f3f46;
+  --brand-200: #52525b;
+  --brand-500: #a1a1aa;
+  --brand-600: #d4d4d8;
+  --brand-700: #e4e4e7;
+
+  /* ---------- 语义色 ---------- */
+  --success-bg: #052e16;
+  --success-text: #86efac;
+  --success-border: #166534;
+  --success-color: #4ade80;
+  --warning-bg: #451a03;
+  --warning-text: #fcd34d;
+  --warning-border: #92400e;
+  --warning-color: #fbbf24;
+  --error-bg: #450a0a;
+  --error-text: #fca5a5;
+  --error-border: #991b1b;
+  --error-color: #f87171;
+  --info-bg: #172554;
+  --info-text: #93c5fd;
+  --info-border: #1e40af;
+  --info-color: #60a5fa;
+
+  /* ---------- 组件语义别名 ---------- */
+  --bg-card: #27272a;
+  --bg-input: #18181b;
+  --text-placeholder: #52525b;
+  --accent-color: #e4e4e7;
+
+  /* ---------- 字体 ---------- */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow-md: 0 4px 12px 0 rgb(0 0 0 / 0.4);
+  --shadow-lg: 0 12px 32px 0 rgb(0 0 0 / 0.5);
+  --shadow-xl: 0 24px 48px 0 rgb(0 0 0 / 0.6);
+}
+
+/* ============================================================
+ * 阅读器专属 Token — 墨林墨绿配色
+ * 三套主题：light / eye-care / dark
+ * 通过 data-reader-theme 属性切换
+ * ============================================================ */
+[data-reader-theme="light"] {
+  --reader-bg: #faf8f3;
+  --reader-bg-secondary: #f6f4ef;
+  --reader-bg-elevated: #fffdf7;
+  --reader-text: #3d3a33;
+  --reader-text-secondary: #5c574b;
+  --reader-text-tertiary: #8b8578;
+  --reader-text-quaternary: #a8a296;
+  --reader-border: #e0dbd0;
+  --reader-border-strong: #c8c2b4;
+  --reader-brand: #3d7a52;
+  --reader-brand-hover: #2d5a3d;
+  --reader-brand-bg: #f0f5f2;
+  --reader-brand-border: #b8d0c2;
+
+  --reader-success-bg: #e8f0eb;
+  --reader-success-text: #2d6a4f;
+  --reader-warning-bg: #f5eddc;
+  --reader-warning-text: #8b6914;
+  --reader-error-bg: #f0e4e4;
+  --reader-error-text: #8b3a3a;
+}
+
+[data-reader-theme="eye-care"] {
+  --reader-bg: #faf6ee;
+  --reader-bg-secondary: #f5ede0;
+  --reader-bg-elevated: #fdf9f0;
+  --reader-text: #5c4a3a;
+  --reader-text-secondary: #7a6858;
+  --reader-text-tertiary: #a89888;
+  --reader-text-quaternary: #c4b8a8;
+  --reader-border: #e8dcc8;
+  --reader-border-strong: #d4c4a8;
+  --reader-brand: #8b6914;
+  --reader-brand-hover: #6b4f0f;
+  --reader-brand-bg: #f5eddc;
+  --reader-brand-border: #e8d8b0;
+
+  --reader-success-bg: #e8f0eb;
+  --reader-success-text: #2d6a4f;
+  --reader-warning-bg: #f5eddc;
+  --reader-warning-text: #8b6914;
+  --reader-error-bg: #f0e4e4;
+  --reader-error-text: #8b3a3a;
+}
+
+[data-reader-theme="dark"] {
+  --reader-bg: #1a1f1b;
+  --reader-bg-secondary: #232826;
+  --reader-bg-elevated: #232826;
+  --reader-text: #d0d4cc;
+  --reader-text-secondary: #a8b0a5;
+  --reader-text-tertiary: #7a8278;
+  --reader-text-quaternary: #5a6058;
+  --reader-border: #2d332f;
+  --reader-border-strong: #3a413c;
+  --reader-brand: #7fc29a;
+  --reader-brand-hover: #9ad4b0;
+  --reader-brand-bg: #1e3329;
+  --reader-brand-border: #2d5a3d;
+
+  --reader-success-bg: #1e3a2a;
+  --reader-success-text: #7fc29a;
+  --reader-warning-bg: #3a2e1a;
+  --reader-warning-text: #d4b87a;
+  --reader-error-bg: #3a1e1e;
+  --reader-error-text: #d48a8a;
+}
+
+/* ============================================================
+ * 减少动效适配
+ * ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

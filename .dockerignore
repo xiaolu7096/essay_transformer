@@ -1,0 +1,15 @@
+.git
+.venv
+specs
+legacy
+docs
+ui-showcase
+.specify
+data
+runs
+**/__pycache__
+**/.pytest_cache
+webui/node_modules
+webui/dist
+*.log
+*.md

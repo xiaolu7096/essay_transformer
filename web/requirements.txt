@@ -1,0 +1,13 @@
+# Web 客户端后端专属依赖（与根 requirements.txt 的 core 白名单物理分离）
+fastapi>=0.115
+uvicorn[standard]>=0.30
+sqlalchemy>=2.0
+pyjwt>=2.9
+passlib>=1.7
+pydantic-settings>=2.5
+cryptography>=43.0
+python-multipart>=0.0.12
+
+# 测试
+httpx>=0.27
+pytest>=8.0
