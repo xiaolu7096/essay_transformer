@@ -4,6 +4,50 @@
 
 ---
 
+## 2026-10-09
+
+### Bug #5：用户菜单按钮失效/名实不符
+
+**严重程度**：中
+
+**现象**：个人控制页（AppLayout 用户菜单）6 个按钮中，「帮助文档」「反馈建议」点击后只关闭菜单、无任何跳转；「个人设置」实际跳转到密钥管理页，与「密钥管理」入口重复。桌面下拉菜单与移动抽屉两处表现一致。
+
+**根因**：
+- `goHelp`/`goFeedback` 是空壳函数（注释"未来跳转"），路由表中也不存在 help/feedback 对应路由
+- `goSettings` 为临时方案，直接 `router.push('/credentials')`，无独立设置页
+
+**修复方式**（按用户确认的最小方案）：
+- 删除「个人设置」「反馈建议」两个菜单项（桌面 + 移动抽屉同步）
+- 「帮助文档」改为禁用态并标注"敬请期待"（待 Spec 006 帮助页上线后恢复跳转）
+- 删除无用函数 goSettings/goHelp/goFeedback，菜单收敛为：我的任务、密钥管理、帮助文档、退出登录
+
+**修改文件**：
+- webui/src/layouts/AppLayout.vue（菜单模板、脚本、样式）
+
+---
+
+### 优化 #4：任务卡片展示真实论文标题
+
+**现象**：任务列表卡片标题显示 arXiv ID（如 1910.07467）而非论文标题。
+
+**修复方式**：
+- TaskListView.vue 新增 displayTitle(task)：优先取 task.result?.title，回退 source_ref
+- 取消/删除确认弹窗同步使用 displayTitle
+- 边界：运行中/失败任务无标题只能回退 arXiv ID；fake 模式任务显示假标题
+
+**修改文件**：webui/src/views/TaskListView.vue
+
+---
+
+### 变更：品牌定版「纸慧 / PaperWise」
+
+- 重写 BrandLogo.vue（绿色圆角方块 + 白色书页嫩芽）
+- 全站品牌文字（Landing/Login/Register/AppLayout）、index.html title、favicon（data URI）、FastAPI title 统一为纸慧 PaperWise
+
+**修改文件**：webui/src/components/BrandLogo.vue、webui/index.html、4 个视图/布局、web/app/main.py
+
+---
+
 ## 2026-10-07
 
 ### Bug #3：密钥设置页暗色主题下不可读
